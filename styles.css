@@ -469,3 +469,30 @@
   .tour-dots i { transition: none; }
 }
 
+
+/* Herramientas */
+.tools { padding-bottom: clamp(64px, 9vw, 120px); }
+.tool-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px;
+}
+.tool {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 14px 16px; font-weight: 600; font-size: 0.9375rem; line-height: 1.2;
+}
+/* Logos oficiales de Simple Icons (CC0), pintados con el color de cada marca */
+.tool i {
+  flex: none; width: 28px; height: 28px; background: var(--c);
+  -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat;
+}
+/* Marcas con poco contraste sobre el fondo de cada tema */
+.tool-github i, .tool-react i { --c: var(--ink) !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tool-css i, :root:not([data-theme="light"]) .tool-pwa i { --c: var(--ink) !important; }
+  :root:not([data-theme="light"]) .tool-react i { --c: #61DAFB !important; }
+}
+:root[data-theme="dark"] .tool-css i, :root[data-theme="dark"] .tool-pwa i { --c: var(--ink) !important; }
+:root[data-theme="dark"] .tool-react i { --c: #61DAFB !important; }
+@media (max-width: 1000px) { .tool-list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .tool-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
