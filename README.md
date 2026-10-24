@@ -3,7 +3,8 @@
 Página estática (sin build) publicada con GitHub Pages: desarrollo de apps y soluciones a medida.
 
 - `index.html`: portada general (proyectos, servicios, cómo trabajo, contacto).
-- `app-casa.html` y `alterna.html`: detalle de cada proyecto.
+- `app-casa.html`, `alterna.html`, `turnos.html` y `asistente-ia.html`: detalle de cada proyecto.
+- `demos/turnos/` y `demos/asistente/`: demos que se pueden probar en el navegador, sin servidor (los datos quedan en localStorage).
 - `styles.css`: estilos compartidos.
 - `videos/` y `posters/`: videos de los proyectos y su portada (frame en el segundo 4 o 9).
 
