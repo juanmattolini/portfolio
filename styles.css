@@ -344,3 +344,4 @@
 }
 .top { align-items: center; }
 .private-note { color: var(--muted); margin: 0; font-size: 0.9375rem; }
+.case-foot-gap { margin-top: clamp(40px, 6vw, 64px); }
