@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock y ventas, Juan Mattolini</title>
+<meta name="description" content="Caso de desarrollo: panel de stock y ventas para una pyme, con alertas de stock bajo, pedido sugerido al proveedor y registro de ventas.">
+<meta property="og:title" content="Stock y ventas, caso de desarrollo">
+<meta property="og:image" content="capturas/stock-resumen-claro.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#E6E9E7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+<script src="tema.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="home" href="./">Juan Mattolini</a>
+  <div class="top-right"><nav class="top-nav"><a href="./#proyectos">Proyectos</a><a href="bot-whatsapp.html">Bot de WhatsApp</a><a href="#contacto">Contacto</a></nav><button class="theme-btn" type="button" aria-label="Cambiar a modo oscuro"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div>
+</header>
+<main>
+  <section class="case case-first" aria-labelledby="stock-titulo">
+    <div class="wrap">
+      <div class="case-intro">
+        <div>
+          <h1 class="case-title" id="stock-titulo">Stock y ventas</h1>
+          <p class="lead">Un panel para una pyme que hoy lleva el stock en una planilla: cuánto se vendió, qué se está por terminar y cuánto pedirle a cada proveedor. La demo usa una dietética ficticia, Dietética Raíz, con dos meses de ventas de ejemplo, y se puede usar completa: vender, editar productos y registrar la mercadería que llega.</p>
+          <p class="links">
+            <a class="btn" href="demos/stock/">Probar la demo</a>
+          </p>
+        </div>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>Web app para la computadora del local o el celular</dd></div>
+          <div><dt>Interfaz</dt><dd>HTML, CSS y JavaScript sin frameworks, gráficos en SVG propios</dd></div>
+          <div><dt>Datos en la demo</dt><dd>localStorage, con 22 productos y 60 días de ventas</dd></div>
+          <div><dt>Versión para clientes</dt><dd>Supabase: productos, ventas, usuarios por local</dd></div>
+          <div><dt>Integraciones</dt><dd>Pedido al proveedor por WhatsApp o copiado</dd></div>
+          <div><dt>Publicación</dt><dd>GitHub Pages</dd></div>
+        </dl>
+      </div>
+
+      <section class="tour tour-browser" data-tour aria-labelledby="tour-titulo">
+        <div class="tour-stage">
+          <div class="tour-track" tabindex="0" aria-label="Pantallas de Stock y ventas. Usá las flechas para recorrerlas.">
+          <figure class="tour-slide" data-texto="Ventas del día contra ayer a la misma hora, ventas por día, ticket promedio, margen y lo que hay que reponer." aria-label="Resumen, 1 de 4"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/stock-resumen-claro.webp" alt="Stock y ventas: pantalla Resumen" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/stock-resumen-oscuro.webp" alt="Stock y ventas: pantalla Resumen" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Cada producto con su margen, cuánto se vende por día y para cuántos días alcanza lo que hay." aria-label="Productos, 2 de 4"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/stock-productos-claro.webp" alt="Stock y ventas: pantalla Productos" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/stock-productos-oscuro.webp" alt="Stock y ventas: pantalla Productos" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Se tocan los productos, se elige el medio de pago y al confirmar el stock se descuenta solo." aria-label="Registrar venta, 3 de 4"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/stock-vender-claro.webp" alt="Stock y ventas: pantalla Registrar venta" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/stock-vender-oscuro.webp" alt="Stock y ventas: pantalla Registrar venta" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Lo que está bajo, agrupado por proveedor, con la cantidad sugerida y el pedido listo para mandar por WhatsApp." aria-label="Reponer, 4 de 4"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/stock-reponer-claro.webp" alt="Stock y ventas: pantalla Reponer" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/stock-reponer-oscuro.webp" alt="Stock y ventas: pantalla Reponer" width="1600" height="1000" loading="lazy"></div></figure>
+          </div>
+        </div>
+        <div class="tour-side">
+          <h2 class="case-h tour-h" id="tour-titulo">Recorrido por la demo</h2>
+          <ol class="tour-steps">
+          <li><button type="button">Resumen</button></li>
+          <li><button type="button">Productos</button></li>
+          <li><button type="button">Registrar venta</button></li>
+          <li><button type="button">Reponer</button></li>
+          </ol>
+          <div class="tour-now" aria-live="polite"><span class="tour-count"></span><p class="tour-text"></p></div>
+          <div class="tour-controls">
+            <button class="tour-prev" type="button" aria-label="Pantalla anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button class="tour-next" type="button" aria-label="Pantalla siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <p class="shots-note">Capturas de la demo con datos ficticios.</p>
+        </div>
+      </section>
+      <h2 class="case-h">Qué hace, sección por sección</h2>
+      <div class="features">
+        <article>
+          <h3>Resumen del negocio</h3>
+          <p>Ventas de hoy comparadas con ayer a la misma hora, ventas del período contra el anterior, ticket promedio y margen bruto.</p>
+          <p>Gráfico de ventas por día, los más vendidos y el margen de cada categoría.</p>
+        </article>
+        <article>
+          <h3>Productos</h3>
+          <p>Lista con buscador y filtro por categoría. Muestra precio, margen, stock con su mínimo y para cuántos días alcanza según lo que se vende.</p>
+          <p>Alta y edición con aviso si el precio queda por debajo del costo.</p>
+        </article>
+        <article>
+          <h3>Registrar venta</h3>
+          <p>Una caja simple: se suman productos por unidad o por kilo, se elige efectivo, transferencia o tarjeta y se confirma. No deja vender más de lo que hay.</p>
+          <p>Si algo queda bajo después de la venta, avisa en el momento.</p>
+        </article>
+        <article>
+          <h3>Reponer</h3>
+          <p>Los productos con poco stock agrupados por proveedor, con cuánto pedir y el costo del pedido. La cantidad se puede cambiar antes de mandarlo.</p>
+        </article>
+        <article>
+          <h3>Pedido al proveedor</h3>
+          <p>Arma el mensaje con todo el pedido y lo abre en WhatsApp, o lo copia para mandarlo por mail. Cuando llega la mercadería, un botón la suma al stock.</p>
+        </article>
+        <article>
+          <h3>Movimientos</h3>
+          <p>Ventas e ingresos de mercadería en una sola lista, con fecha, detalle, medio de pago o proveedor e importe.</p>
+        </article>
+      </div>
+      <h2 class="case-h">Cómo está armada</h2>
+      <div class="arch" role="img" aria-label="Diagrama: el local registra ventas y productos en la app. En la demo los datos quedan en el navegador; en la versión para un negocio quedan en Supabase. La app calcula el ritmo de venta y el pedido sugerido, y manda el pedido al proveedor por WhatsApp.">
+        <div class="arch-col">
+          <p class="arch-title">El local</p>
+          <div class="node">Caja para registrar ventas</div>
+          <div class="node">Productos, precios y mínimos</div>
+          <div class="node node-soft">Funciona en la compu del mostrador o en el celular</div>
+        </div>
+        <div class="arch-link"><span>registra</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Los datos</p>
+          <div class="node">En la demo: el navegador</div>
+          <div class="node">En la versión real: Postgres en Supabase</div>
+          <div class="node">Cada venta descuenta el stock en la misma operación</div>
+        </div>
+        <div class="arch-link"><span>calcula</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Las decisiones</p>
+          <div class="node">Ritmo de venta de las últimas 4 semanas</div>
+          <div class="node">Alertas y pedido sugerido por proveedor</div>
+          <div class="node node-soft">Pedido por WhatsApp o copiado</div>
+        </div>
+      </div>
+      <h2 class="case-h">Decisiones de desarrollo</h2>
+      <div class="decisions">
+        <div>
+          <h3>Alertas por días, no solo por mínimo</h3>
+          <p>Un mínimo fijo no alcanza: 3 kg de almendras duran dos días y 3 kg de té, un mes. La alerta mira para cuántos días alcanza el stock según lo que se vende y lo compara con lo que tarda cada proveedor en entregar.</p>
+        </div>
+        <div>
+          <h3>Pedido sugerido explicable</h3>
+          <p>La cantidad cubre lo que se vende mientras llega el pedido más dos semanas, redondeada a bolsas de 5 kg o cajas de 6. Es una cuenta que el dueño puede revisar, y la puede cambiar antes de mandarla.</p>
+        </div>
+        <div>
+          <h3>Comparaciones justas</h3>
+          <p>Las ventas de hoy se comparan con las de ayer hasta la misma hora, no con el día entero. Los domingos cerrados se muestran como cerrados y no cuentan para el promedio.</p>
+        </div>
+        <div>
+          <h3>Gráficos sin librerías</h3>
+          <p>Las barras se dibujan en SVG con el mismo código que arma el resto de la pantalla. La página carga rápido y se adapta al modo claro y oscuro sin configurar nada.</p>
+        </div>
+        <div>
+          <h3>Sin vender lo que no hay</h3>
+          <p>La caja no deja sumar más de lo que hay en stock, y el stock se descuenta en el mismo momento en que se guarda la venta.</p>
+        </div>
+        <div>
+          <h3>Lista para crecer</h3>
+          <p>Productos, proveedores y ventas ya tienen la forma de las tablas de la base. Pasar a Supabase suma usuarios por local y que dos cajas vendan a la vez sin pisarse.</p>
+        </div>
+      </div>
+
+      <p class="case-foot case-foot-gap">Demo desarrollada en octubre de 2026.</p>
+    </div>
+  </section>
+
+  <section class="wrap next" aria-label="Otro proyecto">
+    <a href="bot-whatsapp.html"><span>Otro proyecto</span><b>Bot de WhatsApp para atención al cliente</b></a>
+  </section>
+</main>
+
+<section class="contact" id="contacto" aria-labelledby="contacto-titulo">
+  <div class="wrap">
+    <p id="contacto-titulo">¿Tu negocio lleva el stock en una planilla? Contame cómo lo manejás hoy.</p>
+    <a class="mail" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20un%20panel%20de%20stock">mattolinijuansebastian@gmail.com</a>
+    <footer>Juan Sebastián Mattolini, desarrollo de apps y soluciones a medida.</footer>
+  </div>
+</section>
+<script src="tour.js"></script>
+</body>
+</html>
