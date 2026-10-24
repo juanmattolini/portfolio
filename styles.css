@@ -345,3 +345,18 @@
 .top { align-items: center; }
 .private-note { color: var(--muted); margin: 0; font-size: 0.9375rem; }
 .case-foot-gap { margin-top: clamp(40px, 6vw, 64px); }
+
+/* Entrada de la portada: los dos teléfonos suben juntos y el de atrás se abre en abanico. */
+@keyframes frente-entra {
+  from { opacity: 0; transform: translateY(48px) rotate(-4deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(-4deg); }
+}
+@keyframes atras-abanico {
+  0%   { opacity: 0; transform: translate(-47%, 3%) translateY(48px) rotate(-4deg); animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  40%  { opacity: 1; transform: translate(-47%, 3%) rotate(-4deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(6deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .phones .phone-front { animation: frente-entra 600ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both; }
+  .phones .phone-back { animation: atras-abanico 1500ms 150ms both; }
+}
