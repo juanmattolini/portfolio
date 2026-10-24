@@ -41,11 +41,35 @@
         </dl>
       </div>
 
-      <div class="shots shots-browser">
-        <figure class="shot-main"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img src="capturas/alterna-reservar.webp" alt="Pantalla Reservar en computadora: semana con puestos libres por día y plano de la oficina con Zona Norte, Zona Sur y Sala silenciosa" loading="lazy"></div><figcaption>Reservar: la semana y el plano de la oficina</figcaption></figure>
-        <figure><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img src="capturas/alterna-ocupacion.webp" alt="Pantalla Ocupación: reservas por día frente a la capacidad y cumplimiento del equipo" loading="lazy"></div><figcaption>Ocupación y cumplimiento del equipo</figcaption></figure>
-      </div>
-      <p class="shots-note">Capturas de la app real con datos de ejemplo: los nombres son ficticios.</p>
+      <section class="tour tour-browser" data-tour aria-labelledby="tour-titulo">
+        <div class="tour-stage">
+          <div class="tour-track" tabindex="0" aria-label="Pantallas de Alterna. Usá las flechas para recorrerlas.">
+          <figure class="tour-slide" data-texto="La semana con los puestos libres y el plano de la oficina: un toque reserva o libera." aria-label="Reservar, 1 de 6"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/alterna-reservar-claro.webp" alt="Alterna: pantalla Reservar" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/alterna-reservar-oscuro.webp" alt="Alterna: pantalla Reservar" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="El mes completo, con tus reservas marcadas y la fecha en que se abre cada día." aria-label="Calendario del mes, 2 de 6"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/alterna-mes-claro.webp" alt="Alterna: pantalla Calendario del mes" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/alterna-mes-oscuro.webp" alt="Alterna: pantalla Calendario del mes" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Tus días en calendario y la reserva recurrente que se completa sola cada noche." aria-label="Mis reservas, 3 de 6"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/alterna-mias-claro.webp" alt="Alterna: pantalla Mis reservas" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/alterna-mias-oscuro.webp" alt="Alterna: pantalla Mis reservas" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Reservas por día frente a la capacidad y quién cargó sus días esta semana." aria-label="Ocupación, 4 de 6"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/alterna-ocupacion-claro.webp" alt="Alterna: pantalla Ocupación" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/alterna-ocupacion-oscuro.webp" alt="Alterna: pantalla Ocupación" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Los días ancla de cada equipo y el optimizador que reparte la carga entre los días." aria-label="Equipos, 5 de 6"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/alterna-equipos-claro.webp" alt="Alterna: pantalla Equipos" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/alterna-equipos-oscuro.webp" alt="Alterna: pantalla Equipos" width="1600" height="1000" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Reglas de presencialidad, zonas y mesas, puestos fuera de servicio, feriados y cierres." aria-label="Oficina, 6 de 6"><div class="device-browser"><div class="bar"><i></i><i></i><i></i></div><img class="th-light" src="capturas/alterna-oficina-claro.webp" alt="Alterna: pantalla Oficina" width="1600" height="1000" loading="lazy"><img class="th-dark" src="capturas/alterna-oficina-oscuro.webp" alt="Alterna: pantalla Oficina" width="1600" height="1000" loading="lazy"></div></figure>
+          </div>
+        </div>
+        <div class="tour-side">
+          <h2 class="case-h tour-h" id="tour-titulo">Recorrido por la app</h2>
+          <ol class="tour-steps">
+          <li><button type="button">Reservar</button></li>
+          <li><button type="button">Calendario del mes</button></li>
+          <li><button type="button">Mis reservas</button></li>
+          <li><button type="button">Ocupación</button></li>
+          <li><button type="button">Equipos</button></li>
+          <li><button type="button">Oficina</button></li>
+          </ol>
+          <div class="tour-now" aria-live="polite"><span class="tour-count"></span><p class="tour-text"></p></div>
+          <div class="tour-controls">
+            <button class="tour-prev" type="button" aria-label="Pantalla anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button class="tour-next" type="button" aria-label="Pantalla siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <p class="shots-note">Capturas de la app real con datos de ejemplo: los nombres son ficticios.</p>
+        </div>
+      </section>
 
       <h2 class="case-h">Qué hace, sección por sección</h2>
       <div class="features">
@@ -183,5 +207,6 @@
     });
   });
 </script>
+<script src="tour.js"></script>
 </body>
 </html>

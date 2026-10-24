@@ -44,12 +44,35 @@
         </dl>
       </div>
 
-      <div class="shots shots-phones">
-        <figure><div class="device-phone"><img src="capturas/casa-tareas.webp" alt="Pantalla de Tareas: resumen de vencidas, de hoy y próximas, buscador, filtro por habitación y lista de tareas" loading="lazy"></div><figcaption>Tareas agrupadas por vencimiento</figcaption></figure>
-        <figure><div class="device-phone"><img src="capturas/casa-detalle.webp" alt="Detalle de la tarea Arreglar grifo que gotea: habitación, prioridad, fecha, notas, recordatorio y materiales con botón Ver precios" loading="lazy"></div><figcaption>Detalle con materiales y precios</figcaption></figure>
-        <figure><div class="device-phone"><img src="capturas/casa-compras.webp" alt="Pantalla de Compras: materiales por comprar agrupados por tarea, con botón Ver precios de Mercado Libre" loading="lazy"></div><figcaption>Lista de compras con Mercado Libre</figcaption></figure>
-      </div>
-      <p class="shots-note">Capturas de la app publicada, con las tareas de ejemplo que trae al empezar.</p>
+      <section class="tour tour-phone" data-tour aria-labelledby="tour-titulo">
+        <div class="tour-stage">
+          <div class="tour-track" tabindex="0" aria-label="Pantallas de App Casa. Usá las flechas para recorrerlas.">
+          <figure class="tour-slide" data-texto="Lo pendiente agrupado en vencidas, de hoy y próximas, con filtro por habitación y buscador." aria-label="Tareas, 1 de 6"><div class="device-phone"><img class="th-light" src="capturas/casa-tareas-claro.webp" alt="App Casa: pantalla Tareas" width="720" height="1558" loading="lazy"><img class="th-dark" src="capturas/casa-tareas-oscuro.webp" alt="App Casa: pantalla Tareas" width="720" height="1558" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Habitación, prioridad, fecha, notas, recordatorio y los materiales con su precio en Mercado Libre." aria-label="Detalle de una tarea, 2 de 6"><div class="device-phone"><img class="th-light" src="capturas/casa-detalle-claro.webp" alt="App Casa: pantalla Detalle de una tarea" width="720" height="1558" loading="lazy"><img class="th-dark" src="capturas/casa-detalle-oscuro.webp" alt="App Casa: pantalla Detalle de una tarea" width="720" height="1558" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Los materiales de todas las tareas en una sola lista para compartir, con el botón Ver precios." aria-label="Compras, 3 de 6"><div class="device-phone"><img class="th-light" src="capturas/casa-compras-claro.webp" alt="App Casa: pantalla Compras" width="720" height="1558" loading="lazy"><img class="th-dark" src="capturas/casa-compras-oscuro.webp" alt="App Casa: pantalla Compras" width="720" height="1558" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Descuentos de comercios auspiciantes que coinciden con tu lista, y ferreterías cerca de tu ubicación." aria-label="Ofertas, 4 de 6"><div class="device-phone"><img class="th-light" src="capturas/casa-ofertas-claro.webp" alt="App Casa: pantalla Ofertas" width="720" height="1558" loading="lazy"><img class="th-dark" src="capturas/casa-ofertas-oscuro.webp" alt="App Casa: pantalla Ofertas" width="720" height="1558" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Responde mirando tus tareas: en este caso, qué conviene hacer primero." aria-label="Asistente, 5 de 6"><div class="device-phone"><img class="th-light" src="capturas/casa-asistente-claro.webp" alt="App Casa: pantalla Asistente" width="720" height="1558" loading="lazy"><img class="th-dark" src="capturas/casa-asistente-oscuro.webp" alt="App Casa: pantalla Asistente" width="720" height="1558" loading="lazy"></div></figure>
+          <figure class="tour-slide" data-texto="Cuenta para sincronizar entre dispositivos, tema claro u oscuro y habitaciones editables." aria-label="Ajustes, 6 de 6"><div class="device-phone"><img class="th-light" src="capturas/casa-ajustes-claro.webp" alt="App Casa: pantalla Ajustes" width="720" height="1558" loading="lazy"><img class="th-dark" src="capturas/casa-ajustes-oscuro.webp" alt="App Casa: pantalla Ajustes" width="720" height="1558" loading="lazy"></div></figure>
+          </div>
+        </div>
+        <div class="tour-side">
+          <h2 class="case-h tour-h" id="tour-titulo">Recorrido por la app</h2>
+          <ol class="tour-steps">
+          <li><button type="button">Tareas</button></li>
+          <li><button type="button">Detalle de una tarea</button></li>
+          <li><button type="button">Compras</button></li>
+          <li><button type="button">Ofertas</button></li>
+          <li><button type="button">Asistente</button></li>
+          <li><button type="button">Ajustes</button></li>
+          </ol>
+          <div class="tour-now" aria-live="polite"><span class="tour-count"></span><p class="tour-text"></p></div>
+          <div class="tour-controls">
+            <button class="tour-prev" type="button" aria-label="Pantalla anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button class="tour-next" type="button" aria-label="Pantalla siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <p class="shots-note">Capturas de la app publicada, con las tareas de ejemplo que trae al empezar. Las ofertas son de comercios de prueba.</p>
+        </div>
+      </section>
 
       <h3 class="case-h">Qué hace, sección por sección</h3>
       <div class="features">
@@ -243,5 +266,6 @@
     });
   });
 </script>
+<script src="tour.js"></script>
 </body>
 </html>
