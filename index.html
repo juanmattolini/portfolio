@@ -42,6 +42,7 @@
   }
   .top strong { font: 700 1.125rem/1 var(--display); letter-spacing: -0.01em; }
   .top a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  .top-nav { display: flex; gap: 20px; }
   .top a:hover { color: var(--ink); }
 
   /* Portada */
@@ -113,6 +114,51 @@
   .reel p { margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.45; }
   .reel .len { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
 
+  /* App Casa por dentro */
+  .case { background: var(--surface); padding: clamp(64px, 9vw, 120px) 0; }
+  .case-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .case .lead { font-size: 1.1875rem; color: var(--muted); max-width: 46ch; margin: 18px 0 28px; }
+  .links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 0; }
+  .link { font-weight: 600; text-underline-offset: 4px; text-decoration-thickness: 2px; text-decoration-color: var(--mark); }
+  .facts { margin: 0; border-top: 2px solid var(--ink); }
+  .facts div { display: grid; grid-template-columns: 10.5rem 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .facts dt { font-weight: 600; }
+  .facts dd { margin: 0; color: var(--muted); }
+  .case-h {
+    font: 700 clamp(1.375rem, 2.4vw, 1.75rem)/1.1 var(--display); font-stretch: 85%;
+    letter-spacing: -0.015em; margin: clamp(56px, 8vw, 96px) 0 24px;
+  }
+  .case h4 { font: 650 1.125rem/1.25 var(--display); letter-spacing: -0.01em; margin: 0 0 8px; }
+  .case p { line-height: 1.55; }
+  .features { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px 40px; }
+  .features article { border-top: 1px solid var(--line); padding-top: 18px; }
+  .features p { margin: 0 0 10px; color: var(--muted); font-size: 0.9875rem; }
+  .arch {
+    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 0;
+    background: var(--bg); border-radius: 20px; padding: clamp(16px, 3vw, 32px);
+  }
+  .arch-col { display: flex; flex-direction: column; gap: 10px; }
+  .arch-title { font: 700 1rem/1.2 var(--display); margin: 0 0 4px; }
+  .node {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; font-size: 0.9375rem; line-height: 1.4;
+  }
+  .node-soft { background: transparent; border-style: dashed; color: var(--muted); }
+  .node code, .tree { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+  .node code { font-size: 0.875em; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  .arch-link { display: grid; place-items: center; padding: 0 14px; }
+  .arch-link span {
+    font-size: 0.8125rem; color: var(--muted); white-space: nowrap;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    border-left: 2px solid var(--ink); padding-left: 6px;
+  }
+  .decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 56px; }
+  .decisions p { margin: 0; color: var(--muted); max-width: 60ch; }
+  .tree-wrap { background: var(--ink); color: #DCE3DE; border-radius: 16px; overflow-x: auto; }
+  .tree { margin: 0; padding: clamp(18px, 3vw, 28px); font-size: 0.875rem; line-height: 1.6; }
+  .case-foot { color: var(--muted); margin: 16px 0 0; }
+  .case + .offer { border-top: 0; }
+
   /* Qué hago */
   .offer {
     border-top: 1px solid var(--line);
@@ -146,12 +192,18 @@
       margin-right: calc(var(--gutter) * -1); padding-right: var(--gutter);
     }
     .reel { scroll-snap-align: start; }
+    .case-intro { grid-template-columns: 1fr; }
+    .arch { grid-template-columns: 1fr; gap: 0; }
+    .arch-link { padding: 12px 0; }
+    .arch-link span { writing-mode: horizontal-tb; transform: none; border-left: 0; border-top: 2px solid var(--ink); padding: 6px 0 0; }
   }
   @media (max-width: 720px) {
     .hero { grid-template-columns: 1fr; }
     .phone { justify-self: center; transform: rotate(2deg); width: min(68vw, 280px); }
     .shelf { grid-auto-columns: 64%; }
     .offer { grid-template-columns: 1fr; }
+    .decisions { grid-template-columns: 1fr; }
+    .facts div { grid-template-columns: 1fr; gap: 2px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .phone { transform: none; }
@@ -163,7 +215,7 @@
 
 <header class="wrap top">
   <strong>Juan Mattolini</strong>
-  <a href="#contacto">Contacto</a>
+  <nav class="top-nav"><a href="#app-casa">App Casa por dentro</a><a href="#contacto">Contacto</a></nav>
 </header>
 
 <main>
@@ -181,7 +233,7 @@
   <section class="wrap work" aria-labelledby="trabajos">
     <div class="work-head">
       <h2 id="trabajos">Trabajos</h2>
-      <p>Videos para App Casa, una app que organiza tareas, compras y gastos del hogar. Tocá uno para verlo con sonido.</p>
+      <p>Videos para App Casa, una app que organiza tareas, compras y gastos del hogar. Tocá uno para verlo con sonido, o mirá <a href="#app-casa">cómo está hecha la app</a>.</p>
     </div>
     <ul class="shelf">
       <li class="reel">
@@ -210,6 +262,156 @@
         <p><span class="len">0:35</span>, con música. Cupones y negocios del barrio dentro de la app.</p>
       </li>
     </ul>
+  </section>
+
+  <section class="case" id="app-casa" aria-labelledby="app-casa-titulo">
+    <div class="wrap">
+      <div class="case-intro">
+        <div>
+          <h2 id="app-casa-titulo">App Casa por dentro</h2>
+          <p class="lead">App Casa es una app para el mantenimiento del hogar: anotás lo que hay que arreglar, qué materiales hacen falta, cuánto cuesta y quién lo hace. La diseñé y la programé yo; los videos de arriba muestran sus funciones.</p>
+          <p class="links">
+            <a class="btn" href="https://juanmattolini.github.io/app-casa/">Abrir la app</a>
+            <a class="link" href="https://github.com/juanmattolini/app-casa">Ver el código en GitHub</a>
+          </p>
+        </div>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>Web app instalable (PWA) que funciona sin conexión</dd></div>
+          <div><dt>Interfaz</dt><dd>React 18 y Vite 5</dd></div>
+          <div><dt>Datos en el teléfono</dt><dd>IndexedDB con Dexie</dd></div>
+          <div><dt>Nube</dt><dd>Supabase: cuentas, base Postgres, archivos y funciones en el servidor</dd></div>
+          <div><dt>Servicios</dt><dd>Mercado Libre, Claude (Anthropic), OpenStreetMap, Google Calendar</dd></div>
+          <div><dt>Publicación</dt><dd>GitHub Actions compila y publica en GitHub Pages en cada cambio</dd></div>
+        </dl>
+      </div>
+
+      <h3 class="case-h">Qué hace, sección por sección</h3>
+      <div class="features">
+        <article>
+          <h4>Tareas</h4>
+          <p>Lista agrupada en Vencidas, Hoy, Próximas y Sin fecha, con filtro por habitación y buscador. Cada tarea tiene prioridad, fotos, notas, materiales con casillas y quién la hace (yo o un profesional).</p>
+          <p>Las tareas pueden repetirse: al marcarla hecha se crea la siguiente con los mismos materiales. El recordatorio va al calendario del teléfono con un enlace de Google Calendar o un archivo .ics.</p>
+        </article>
+        <article>
+          <h4>Presupuestos</h4>
+          <p>En cada tarea se cargan presupuestos con proveedor, precio, teléfono, notas y una foto o PDF adjunto. La app marca el más barato y el elegido, y ese precio pasa a Gastos.</p>
+        </article>
+        <article>
+          <h4>Casa</h4>
+          <p>Los aparatos de la casa con su manual, factura y garantía, y los contactos de plomeros, electricistas, gasistas y otros oficios. Cada uno guarda el historial de trabajos y lo que se pagó.</p>
+        </article>
+        <article>
+          <h4>Compras y Mercado Libre</h4>
+          <p>Junta los materiales pendientes de todas las tareas en una sola lista para compartir. Cada material tiene un botón para ver opciones en Mercado Libre con enlace de afiliado, siempre señalado como tal.</p>
+        </article>
+        <article>
+          <h4>Ofertas y comercios cerca</h4>
+          <p>Ofertas de ferreterías, pinturerías y corralones marcadas como auspiciadas. Si una coincide con algo de tu lista de compras, sube primero. Cada usuario genera un cupón por oferta, que el comercio puede verificar.</p>
+          <p>También busca ferreterías cercanas en OpenStreetMap, con distancia y cómo llegar. La ubicación se usa solo para esa búsqueda y no se guarda.</p>
+        </article>
+        <article>
+          <h4>Gastos</h4>
+          <p>Lo gastado y lo que falta pagar, por mes y por habitación, según el presupuesto elegido de cada tarea. Suma el costo estimado de los materiales con precios de referencia.</p>
+        </article>
+        <article>
+          <h4>Asistente</h4>
+          <p>Un chat que responde dudas de la casa mirando tus tareas, materiales y aparatos, y propone una tarea nueva con su lista de materiales. No guarda nada solo: la tarea se abre para revisarla antes de guardarla.</p>
+          <p>Tiene dos modos: uno básico gratis, con guías armadas para arreglos comunes (siempre deriva el gas a un gasista), y otro con Claude, de Anthropic, que corre en el servidor.</p>
+        </article>
+        <article>
+          <h4>Ajustes y cuenta</h4>
+          <p>Cuenta con email (enlace mágico o contraseña) para sincronizar entre dispositivos, o uso sin cuenta en un solo teléfono. Habitaciones editables, moneda, tema claro u oscuro y copia de seguridad en un archivo.</p>
+        </article>
+      </div>
+
+      <h3 class="case-h">Cómo está armada</h3>
+      <div class="arch" role="img" aria-label="Diagrama: el teléfono guarda los datos y sincroniza con Supabase. Supabase tiene cuentas, la base de datos, los archivos y dos funciones de servidor que hablan con Claude y con Mercado Libre. El teléfono consulta OpenStreetMap directamente. GitHub Actions publica la app en GitHub Pages.">
+        <div class="arch-col">
+          <p class="arch-title">En el teléfono</p>
+          <div class="node">App React instalable</div>
+          <div class="node">IndexedDB (Dexie): tareas, materiales, fotos, presupuestos, aparatos, contactos</div>
+          <div class="node node-soft">OpenStreetMap: comercios cerca</div>
+        </div>
+        <div class="arch-link"><span>sincroniza</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Supabase</p>
+          <div class="node">Cuentas por email</div>
+          <div class="node">Postgres: registros, ofertas, cupones, caché y uso del asistente</div>
+          <div class="node">Archivos privados: fotos y PDF</div>
+          <div class="node">Funciones del servidor: <code>asistente</code> y <code>ml-buscar</code></div>
+        </div>
+        <div class="arch-link"><span>llaman a</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Servicios externos</p>
+          <div class="node">Claude (Anthropic)</div>
+          <div class="node">API de Mercado Libre</div>
+          <div class="node node-soft">GitHub Actions publica en GitHub Pages</div>
+        </div>
+      </div>
+
+      <h3 class="case-h">Decisiones de desarrollo</h3>
+      <div class="decisions">
+        <div>
+          <h4>Funciona sin conexión</h4>
+          <p>La app siempre lee del teléfono. Al sincronizar compara cada registro con lo último que envió, sube solo las diferencias y después baja lo que cambió en otros dispositivos. La hora la pone el servidor, así un teléfono con el reloj mal no desordena los cambios.</p>
+        </div>
+        <div>
+          <h4>Una tabla flexible en la nube</h4>
+          <p>Cada registro viaja como JSON en una sola tabla, así un campo nuevo en la app se sincroniza sin cambiar la base de datos. Los ids locales se traducen a identificadores únicos para que las relaciones entre tareas, materiales y habitaciones se mantengan entre dispositivos.</p>
+        </div>
+        <div>
+          <h4>Cada usuario ve solo lo suyo</h4>
+          <p>Seguridad a nivel de fila (RLS) en Postgres y en los archivos: cada consulta solo alcanza los datos de quien la hace. Las tablas internas, como la caché y el uso del asistente, no tienen acceso desde la app.</p>
+        </div>
+        <div>
+          <h4>Claves solo en el servidor</h4>
+          <p>Las credenciales de Mercado Libre y de Anthropic viven en funciones de Supabase, nunca en la app. Así no se pueden copiar desde el navegador.</p>
+        </div>
+        <div>
+          <h4>Costos bajo control</h4>
+          <p>El asistente con IA tiene un límite diario por usuario, contado de forma atómica para que dos consultas simultáneas no lo pasen, y registra los tokens usados por día. Las búsquedas en Mercado Libre se guardan 24 horas para no repetir consultas.</p>
+        </div>
+        <div>
+          <h4>Plan B ante límites externos</h4>
+          <p>Cuando la API de búsqueda de Mercado Libre empezó a responder con un bloqueo, la app pasó a abrir la búsqueda directamente con el enlace de afiliado. Cada integración se prende o se apaga al compilar, sin tocar el código.</p>
+        </div>
+        <div>
+          <h4>Privacidad</h4>
+          <p>La ubicación no se guarda. La analítica cuenta solo visitas, nunca tareas ni datos personales. La charla con el asistente queda en el teléfono. Las fotos se comprimen antes de guardarse.</p>
+        </div>
+        <div>
+          <h4>Transparencia con lo comercial</h4>
+          <p>Las ofertas dicen "Auspiciado" y los enlaces a Mercado Libre avisan que son de afiliado. Los cupones quedan registrados para medir cuántos se generan y cuántos se canjean.</p>
+        </div>
+      </div>
+
+      <h3 class="case-h">Estructura del código</h3>
+      <div class="tree-wrap">
+<pre class="tree"><code>app-casa/
+├─ src/
+│  ├─ App.jsx              pantallas de Tareas, Compras, Gastos y Ajustes
+│  ├─ Casa.jsx             aparatos y contactos
+│  ├─ Ofertas.jsx          ofertas auspiciadas y cupones
+│  ├─ Cercanos.jsx         comercios cerca (OpenStreetMap)
+│  ├─ MercadoLibre.jsx     botón de precios y costo estimado
+│  ├─ Asistente.jsx        chat
+│  ├─ Acceso.jsx, Nube.jsx inicio de sesión y estado de la sincronización
+│  ├─ db.js                base local (Dexie) y datos de ejemplo
+│  ├─ nube.js              sincronización con Supabase
+│  ├─ asistente-basico.js  asistente sin IA
+│  ├─ plantillas.js        guías de arreglos y sus materiales
+│  ├─ calendario.js        recordatorios (Google Calendar e .ics)
+│  ├─ respaldo.js          copia de seguridad en JSON
+│  └─ imagenes.js          compresión de fotos
+├─ supabase/
+│  ├─ functions/asistente  chat con Claude, con límite diario
+│  ├─ functions/ml-buscar  búsqueda en Mercado Libre con caché
+│  └─ migrations/          5 migraciones SQL con RLS
+├─ .github/workflows/      compilar y publicar en GitHub Pages
+└─ vite.config.js          PWA o un único HTML para vista previa</code></pre>
+      </div>
+      <p class="case-foot">Unas 5.500 líneas de código, desarrolladas en octubre de 2026.</p>
+    </div>
   </section>
 
   <section class="wrap offer" aria-labelledby="que-hago">
