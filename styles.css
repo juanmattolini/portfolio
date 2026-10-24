@@ -442,9 +442,28 @@
 .tour-controls svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .tour .shots-note { grid-column: 1 / -1; }
 
+.tour-dots { display: none; }
 @media (max-width: 720px) {
-  .tour-phone { grid-template-columns: 1fr; }
-  .tour-phone .tour-stage { max-width: 300px; justify-self: center; width: 100%; }
-  .tour-browser .tour-side { grid-template-columns: 1fr; }
-  .tour-browser .tour-controls { margin-top: 12px; }
+  /* En el celular: título, imagen, flechas con puntos y la explicación, todo junto. */
+  .tour, .tour-phone, .tour-browser { grid-template-columns: 1fr; gap: 0; }
+  .tour-side, .tour-browser .tour-side { display: contents; }
+  .tour-h, .tour-browser .tour-h { order: 1; margin-bottom: 16px; }
+  .tour-stage { order: 2; }
+  .tour-controls, .tour-browser .tour-controls { order: 3; margin: 4px 0 10px; justify-content: space-between; align-items: center; }
+  .tour-now { order: 4; min-height: 0; }
+  .tour .shots-note { order: 5; }
+  .tour-steps { display: none; }
+  .tour-dots { display: flex; gap: 8px; }
+  .tour-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: width 0.2s, background 0.2s; }
+  .tour-dots i.on { width: 22px; border-radius: 4px; background: var(--ink); }
+  .tour-phone .tour-stage { max-width: 290px; justify-self: center; width: 100%; }
+  .tour-slide, .tour-browser .tour-slide { padding-bottom: 20px; }
+  /* Alterna: acercar la imagen a la parte útil de la pantalla (la app ocupa el centro). */
+  .tour-browser .device-browser { overflow: hidden; }
+  .tour-browser .device-browser img { width: 138%; max-width: none; margin-left: -19.5%; }
+  .tour-count { font-weight: 600; color: var(--ink); }
 }
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+  .tour-dots i { transition: none; }
+}
+

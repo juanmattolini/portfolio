@@ -9,11 +9,19 @@ document.querySelectorAll('[data-tour]').forEach(function (tour) {
   var texto = tour.querySelector('.tour-text');
   var actual = 0;
 
+  // Puntos entre las flechas (se ven en el celular, donde no entra la lista de pantallas).
+  var puntos = document.createElement('div');
+  puntos.className = 'tour-dots';
+  puntos.setAttribute('aria-hidden', 'true');
+  slides.forEach(function () { puntos.appendChild(document.createElement('i')); });
+  next.parentNode.insertBefore(puntos, next);
+
   function marcar(i) {
     actual = i;
     pasos.forEach(function (b, j) { b.setAttribute('aria-current', j === i ? 'step' : 'false'); });
+    Array.prototype.forEach.call(puntos.children, function (d, j) { d.className = j === i ? 'on' : ''; });
     slides.forEach(function (s, j) { s.setAttribute('aria-hidden', j === i ? 'false' : 'true'); });
-    count.textContent = (i + 1) + ' de ' + slides.length;
+    count.textContent = (i + 1) + ' de ' + slides.length + ' · ' + pasos[i].textContent;
     texto.textContent = slides[i].dataset.texto;
     prev.disabled = i === 0;
     next.disabled = i === slides.length - 1;
