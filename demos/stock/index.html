@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock y ventas, Dietética Raíz</title>
+<meta name="description" content="Demo de un panel de stock y ventas para una pyme: ventas del día, alertas de stock bajo, pedido sugerido al proveedor y registro de ventas.">
+<meta name="theme-color" content="#F2F2EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121412" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F2EE;
+    --surface: #FFFFFF;
+    --soft: #F7F7F4;
+    --ink: #191C19;
+    --muted: #616860;
+    --line: #DCDED8;
+    --accent: #2F7D4F;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #DDEFE3;
+    --chart: #2F7D4F;
+    --chart-2: #B9C9BE;
+    --warn: #B4531D;
+    --warn-soft: #FAE6D9;
+    --bad: #B42318;
+    --bad-soft: #FBE1DE;
+    color-scheme: light;
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121412;
+      --surface: #1A1D1A;
+      --soft: #202420;
+      --ink: #E9ECE7;
+      --muted: #A0A89F;
+      --line: #313730;
+      --accent: #6CCB92;
+      --accent-ink: #0D1B12;
+      --accent-soft: #1F3527;
+      --chart: #6CCB92;
+      --chart-2: #3B4A40;
+      --warn: #F1A877;
+      --warn-soft: #3A281B;
+      --bad: #F59A90;
+      --bad-soft: #3C1F1C;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 400 14.5px/1.45 var(--body); }
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .app { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; }
+  aside { background: var(--surface); border-right: 1px solid var(--line); padding: 18px 12px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 16px; }
+  .logo { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 800 1rem var(--display); }
+  .brand b { display: block; font: 700 1rem/1.1 var(--display); }
+  .brand small { color: var(--muted); font-size: .78rem; }
+  nav.menu button { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; padding: 9px 10px; border-radius: 10px; font-weight: 600; color: var(--muted); text-align: left; }
+  nav.menu button svg { width: 18px; height: 18px; flex: none; }
+  nav.menu button:hover { background: var(--soft); color: var(--ink); }
+  nav.menu button[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
+  nav.menu .count { margin-left: auto; background: var(--warn); color: var(--surface); font-size: .7rem; border-radius: 99px; padding: 1px 7px; }
+  .aside-foot { margin-top: auto; font-size: .75rem; color: var(--muted); padding: 0 8px; }
+  .aside-foot a { color: inherit; }
+  .aside-foot button { border: 0; background: none; padding: 0; color: inherit; text-decoration: underline; font-size: inherit; }
+
+  main { padding: 22px clamp(16px, 3vw, 36px) 40px; min-width: 0; }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  h1 { font: 700 1.6rem/1.1 var(--display); margin: 0; letter-spacing: -.01em; }
+  .head p { margin: 4px 0 0; color: var(--muted); }
+  h2 { font: 700 1rem var(--display); margin: 0 0 10px; }
+  .seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+  .seg button { border: 0; background: none; padding: 5px 12px; border-radius: 7px; font-weight: 600; font-size: .85rem; color: var(--muted); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .kpi span { color: var(--muted); font-size: .8rem; font-weight: 600; }
+  .kpi b { display: block; font: 700 1.6rem/1.2 var(--display); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .kpi small { font-size: .78rem; font-weight: 600; }
+  .up { color: var(--accent); } .down { color: var(--bad); }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 14px; margin-bottom: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .card-head small { color: var(--muted); font-size: .8rem; }
+  svg.chart { width: 100%; height: auto; display: block; }
+  svg.chart text { fill: var(--muted); font-size: 11px; font-family: var(--body); }
+  .hbar { display: grid; grid-template-columns: minmax(0, 1fr) 90px; gap: 4px 10px; align-items: center; font-size: .85rem; margin-bottom: 9px; }
+  .hbar .t { height: 8px; background: var(--soft); border-radius: 5px; overflow: hidden; grid-column: 1 / -1; }
+  .hbar .t i { display: block; height: 100%; background: var(--chart); border-radius: 5px; }
+  .hbar em { font-style: normal; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .alert-list { display: grid; gap: 8px; }
+  .alert { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 10px 12px; border-radius: 10px; background: var(--warn-soft); }
+  .alert.bad { background: var(--bad-soft); }
+  .alert b { font-weight: 600; }
+  .alert small { color: var(--muted); grid-column: 1; }
+  .alert .tag { grid-row: 1 / 3; grid-column: 2; align-self: center; font-size: .75rem; font-weight: 700; color: var(--warn); }
+  .alert.bad .tag { color: var(--bad); }
+  .link-btn { border: 0; background: none; color: var(--accent); font-weight: 600; padding: 0; }
+
+  .toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .toolbar input, .toolbar select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; }
+  .toolbar input { flex: 1; min-width: 180px; }
+  .btn { border: 0; background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: 9px 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .table-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th { text-align: left; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--soft); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td small { display: block; color: var(--muted); font-size: .76rem; }
+  .stockbar { display: inline-block; width: 70px; height: 6px; border-radius: 4px; background: var(--soft); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+  .stockbar i { display: block; height: 100%; background: var(--accent); }
+  .stockbar.warn i { background: var(--warn); } .stockbar.bad i { background: var(--bad); }
+  .pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+  .pill.ok { background: var(--accent-soft); color: var(--accent); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.bad { background: var(--bad-soft); color: var(--bad); }
+  .mini-btn { border: 1px solid var(--line); background: var(--soft); border-radius: 8px; padding: 3px 9px; font-size: .8rem; font-weight: 600; }
+
+  .pos { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr); gap: 14px; align-items: start; }
+  .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .prod { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 12px; text-align: left; }
+  .prod:hover { border-color: var(--accent); }
+  .prod b { display: block; font-weight: 600; font-size: .88rem; line-height: 1.25; }
+  .prod span { display: block; color: var(--muted); font-size: .78rem; margin-top: 4px; }
+  .prod:disabled { opacity: .45; }
+  .ticket { position: sticky; top: 20px; }
+  .line { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+  .qty { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .qty button { border: 0; background: var(--soft); width: 26px; height: 26px; font-weight: 700; }
+  .qty span { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; font-size: .85rem; }
+  .total { display: flex; justify-content: space-between; font: 700 1.3rem var(--display); margin: 14px 0; }
+  .pay { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+  .pay button { border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 7px 0; font-size: .85rem; font-weight: 600; }
+  .pay button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .empty { color: var(--muted); text-align: center; padding: 24px 10px; border: 1px dashed var(--line); border-radius: 12px; }
+
+  .supplier { margin-bottom: 14px; }
+  .supplier .card-head { margin-bottom: 4px; }
+  .supplier-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .note { color: var(--muted); font-size: .82rem; margin: 0 0 14px; max-width: 720px; }
+  .sug-input { width: 70px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; text-align: right; background: var(--soft); }
+
+  dialog { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--ink); padding: 20px; width: min(440px, 92vw); }
+  dialog::backdrop { background: rgba(0,0,0,.35); }
+  dialog h2 { margin-bottom: 14px; }
+  dialog label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: 10px; }
+  dialog input, dialog select { display: block; width: 100%; margin-top: 4px; border: 1px solid var(--line); background: var(--soft); border-radius: 9px; padding: 8px 10px; font-weight: 400; }
+  dialog .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  dialog .acts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+  .toast { position: fixed; right: 20px; bottom: 20px; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: .9rem; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+
+  @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid2, .pos { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    aside { position: sticky; top: 0; z-index: 3; height: auto; flex-direction: row; align-items: center; padding: 8px 10px; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    .brand { padding: 0 8px 0 0; } .brand div, .aside-foot { display: none; }
+    nav.menu { display: flex; gap: 2px; }
+    nav.menu button { white-space: nowrap; padding: 7px 9px; }
+    nav.menu button svg { display: none; }
+    .ticket { position: static; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><span class="logo" aria-hidden="true">R</span><div><b>Dietética Raíz</b><small>Stock y ventas</small></div></div>
+    <nav class="menu" aria-label="Secciones">
+      <button type="button" data-vista="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Resumen</button>
+      <button type="button" data-vista="productos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg>Productos</button>
+      <button type="button" data-vista="vender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11.5l2-8H6.2"/></svg>Vender</button>
+      <button type="button" data-vista="reponer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Reponer<span class="count" id="count-reponer"></span></button>
+      <button type="button" data-vista="movimientos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Movimientos</button>
+    </nav>
+    <p class="aside-foot">Demo de <a href="../../stock.html">Juan Mattolini</a> con datos ficticios. Los cambios quedan en este navegador. <button type="button" data-reiniciar>Volver a los datos de ejemplo</button></p>
+  </aside>
+  <main id="vista"></main>
+</div>
+
+<dialog id="dlg-producto">
+  <form method="dialog" id="form-producto">
+    <h2 id="dlg-titulo">Producto</h2>
+    <label>Nombre<input name="nombre" required maxlength="60"></label>
+    <div class="row2">
+      <label>Categoría<select name="cat"></select></label>
+      <label>Proveedor<select name="prov"></select></label>
+    </div>
+    <div class="row2">
+      <label>Costo<input name="costo" type="number" min="0" step="1" required></label>
+      <label>Precio de venta<input name="precio" type="number" min="0" step="1" required></label>
+    </div>
+    <div class="row2">
+      <label>Stock actual<input name="stock" type="number" min="0" step="0.1" required></label>
+      <label>Stock mínimo<input name="min" type="number" min="0" step="0.1" required></label>
+    </div>
+    <div class="acts"><button class="btn ghost" value="cancelar" formnovalidate>Cancelar</button><button class="btn" value="guardar">Guardar</button></div>
+  </form>
+</dialog>
+<div class="toast" role="status" aria-live="polite"></div>
+
+<script>
+// Panel de stock y ventas (demo). Todo vive en localStorage; en la versión para un negocio
+// los productos y las ventas están en Supabase y el pedido al proveedor sale por WhatsApp o mail.
+(function () {
+  var CLAVE = 'stock-raiz-v1';
+  var PROVEEDORES = {
+    granos: { nombre: 'Granos del Sur', wa: '5491100000001', dias: 3 },
+    frutos: { nombre: 'Frutos Secos Andinos', wa: '5491100000002', dias: 5 },
+    natural: { nombre: 'Natural Food SRL', wa: '5491100000003', dias: 2 },
+    yerba: { nombre: 'Yerbatera Misiones', wa: '5491100000004', dias: 7 }
+  };
+  var CATEGORIAS = ['Granos y legumbres', 'Frutos secos', 'Harinas', 'Snacks', 'Infusiones', 'Aceites y untables'];
+  // [nombre, categoría, proveedor, unidad, costo, precio, ventas por día aprox., mínimo]
+  var BASE = [
+    ['Almendras peladas', 1, 'frutos', 'kg', 9800, 15900, 1.6, 4],
+    ['Nueces mariposa', 1, 'frutos', 'kg', 8200, 13500, 1.3, 3],
+    ['Mix de frutos secos', 1, 'frutos', 'kg', 7600, 12900, 2.4, 5],
+    ['Castañas de cajú', 1, 'frutos', 'kg', 11200, 18400, 0.9, 2],
+    ['Pasas de uva', 1, 'frutos', 'kg', 3100, 5600, 1.1, 3],
+    ['Avena arrollada', 0, 'granos', 'kg', 1400, 2600, 3.2, 8],
+    ['Lentejas', 0, 'granos', 'kg', 1600, 2900, 1.4, 5],
+    ['Garbanzos', 0, 'granos', 'kg', 1500, 2800, 1.2, 5],
+    ['Quinoa', 0, 'granos', 'kg', 4200, 7200, 0.8, 3],
+    ['Arroz integral', 0, 'granos', 'kg', 1300, 2400, 1.9, 6],
+    ['Semillas de chía', 0, 'granos', 'kg', 3900, 6800, 1.0, 3],
+    ['Harina de almendras', 2, 'natural', 'kg', 10500, 16800, 0.5, 2],
+    ['Harina integral', 2, 'granos', 'kg', 900, 1800, 2.2, 6],
+    ['Harina de garbanzo', 2, 'natural', 'kg', 2100, 3900, 0.6, 2],
+    ['Barritas de cereal', 3, 'natural', 'u', 450, 900, 9, 24],
+    ['Galletas de arroz', 3, 'natural', 'u', 700, 1350, 6, 18],
+    ['Chips de banana', 3, 'frutos', 'kg', 5200, 8900, 0.6, 2],
+    ['Yerba orgánica 500 g', 4, 'yerba', 'u', 2300, 3900, 4.5, 12],
+    ['Té verde en hebras', 4, 'natural', 'kg', 9000, 16500, 0.3, 1],
+    ['Mantequilla de maní', 5, 'natural', 'u', 2600, 4500, 2.1, 6],
+    ['Aceite de coco', 5, 'natural', 'u', 4800, 7900, 1.0, 4],
+    ['Miel pura 500 g', 5, 'natural', 'u', 2900, 4900, 1.8, 6]
+  ];
+
+  var $vista = document.getElementById('vista'), $toast = document.querySelector('.toast');
+  var peso = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  var num = new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 });
+  var fDia = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short' });
+  var fHora = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function avisar(t) { $toast.textContent = t; $toast.classList.add('on'); clearTimeout(avisar.t); avisar.t = setTimeout(function () { $toast.classList.remove('on'); }, 2600); }
+  function dia0(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+  var DIA = 86400000;
+
+  // ---------- Datos ----------
+  var db;
+  function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(db)); } catch (e) {} }
+  function cargar() {
+    try { db = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { db = null; }
+    if (!db || !db.productos) db = ejemplo();
+  }
+  // 60 días de ventas inventadas pero creíbles: más los sábados, menos los domingos, y siempre las mismas.
+  function ejemplo() {
+    var semilla = 11;
+    function azar() { semilla = (semilla * 9301 + 49297) % 233280; return semilla / 233280; }
+    var productos = BASE.map(function (b, i) {
+      return { id: 'p' + i, nombre: b[0], cat: CATEGORIAS[b[1]], prov: b[2], unidad: b[3], costo: b[4], precio: b[5], ritmo: b[6], min: b[7], stock: 0 };
+    });
+    var ventas = [], ingresos = [], hoy = dia0(new Date());
+    for (var d = 59; d >= 0; d--) {
+      var fecha = new Date(hoy.getTime() - d * DIA), dow = fecha.getDay();
+      if (dow === 0) continue;
+      var factor = (dow === 6 ? 1.3 : dow === 1 ? 0.92 : 1) * (1 + (59 - d) * 0.004);
+      var tickets = Math.round((21 + azar() * 5) * factor);
+      var horasHasta = d === 0 ? Math.max(9.5, Math.min(20, new Date().getHours() + new Date().getMinutes() / 60)) : 20;
+      for (var t = 0; t < tickets; t++) {
+        var hora = 9 + azar() * 11;
+        if (d === 0 && hora > horasHasta) continue;
+        var items = [], n = 1 + Math.floor(azar() * 3);
+        for (var k = 0; k < n; k++) {
+          var p = productos[Math.floor(Math.pow(azar(), 1.3) * productos.length)];
+          if (azar() > p.ritmo / 4 + 0.25) continue;
+          var cant = p.unidad === 'kg' ? Math.round((0.25 + azar() * 0.75) * 4) / 4 : 1 + Math.floor(azar() * 2);
+          items.push({ p: p.id, cant: cant, precio: p.precio, costo: p.costo });
+        }
+        if (items.length) ventas.push({ id: 'v' + ventas.length, t: fecha.getTime() + hora * 3600000, items: items, pago: ['efectivo', 'transferencia', 'tarjeta'][Math.floor(azar() * 3)] });
+      }
+    }
+    ventas.sort(function (a, b) { return a.t - b.t; });
+    // Stock actual: cada producto queda con una cobertura distinta para que haya alertas.
+    var coberturas = [9, 1.2, 6, 0, 14, 4, 11, 2, 7, 12, 1.5, 10, 6, 3, 2.5, 8, 0.8, 3, 20, 9, 5, 1];
+    productos.forEach(function (p, i) {
+      var s = p.ritmo * coberturas[i % coberturas.length];
+      p.stock = p.unidad === 'kg' ? Math.round(s * 2) / 2 : Math.round(s);
+    });
+    // Últimos ingresos de mercadería, para que Movimientos no arranque vacío.
+    [[6, 'frutos'], [4, 'granos'], [2, 'natural'], [9, 'yerba']].forEach(function (x) {
+      var f = hoy.getTime() - x[0] * DIA + 10 * 3600000;
+      productos.filter(function (p) { return p.prov === x[1]; }).slice(0, 4).forEach(function (p) {
+        ingresos.push({ t: f, p: p.id, cant: p.unidad === 'kg' ? 10 : 24, costo: p.costo });
+      });
+    });
+    return { productos: productos, ventas: ventas, ingresos: ingresos };
+  }
+  function prod(id) { return db.productos.find(function (p) { return p.id === id; }); }
+
+  // ---------- Cálculos ----------
+  function ventasEntre(desde, hasta) { return db.ventas.filter(function (v) { return v.t >= desde && v.t < hasta; }); }
+  function totales(vs) {
+    var r = { monto: 0, costo: 0, tickets: vs.length };
+    vs.forEach(function (v) { v.items.forEach(function (it) { r.monto += it.cant * it.precio; r.costo += it.cant * it.costo; }); });
+    r.ticket = r.tickets ? r.monto / r.tickets : 0;
+    r.margen = r.monto ? (r.monto - r.costo) / r.monto : 0;
+    return r;
+  }
+  // Promedio vendido por día en las últimas 4 semanas: la base para saber cuánto dura el stock.
+  function ritmo(p) {
+    var desde = Date.now() - 28 * DIA, total = 0;
+    db.ventas.forEach(function (v) { if (v.t >= desde) v.items.forEach(function (it) { if (it.p === p.id) total += it.cant; }); });
+    return total / 24; // 4 semanas = 24 días abiertos (los domingos cierra)
+  }
+  function estado(p) {
+    var r = ritmo(p), dias = r ? p.stock / r : Infinity, entrega = PROVEEDORES[p.prov].dias;
+    var nivel = p.stock <= 0 ? 'bad' : (p.stock <= p.min || dias < entrega + 2) ? 'warn' : 'ok';
+    // Pedido sugerido: lo que se vende mientras llega el pedido y dos semanas más, menos lo que hay.
+    var falta = r * (entrega + 14) - p.stock;
+    var sug = falta <= 0 ? 0 : p.unidad === 'kg' ? Math.ceil(falta / 5) * 5 : Math.ceil(falta / 6) * 6;
+    return { ritmo: r, dias: dias, nivel: nivel, sugerido: Math.max(sug, nivel !== 'ok' ? (p.unidad === 'kg' ? 5 : 6) : 0) };
+  }
+  function cantTxt(p, c) { return num.format(c) + (p.unidad === 'kg' ? ' kg' : ' u'); }
+  function diasTxt(d) { return d === Infinity ? 'sin ventas' : d < 1 ? 'menos de 1 día' : Math.floor(d) + (Math.floor(d) === 1 ? ' día' : ' días'); }
+
+  // ---------- Vistas ----------
+  var vista = 'resumen', periodo = 30, busqueda = '', filtroCat = '', ticket = [], pago = 'efectivo', sugeridos = {};
+  function render() {
+    document.querySelectorAll('nav.menu button').forEach(function (b) { b.setAttribute('aria-current', b.dataset.vista === vista ? 'page' : 'false'); });
+    var n = db.productos.filter(function (p) { return estado(p).nivel !== 'ok'; }).length;
+    document.getElementById('count-reponer').textContent = n || '';
+    ({ resumen: vResumen, productos: vProductos, vender: vVender, reponer: vReponer, movimientos: vMovimientos })[vista]();
+  }
+
+  function vResumen() {
+    var hoy = dia0(new Date()).getTime(), ahora = Date.now() + 1;
+    var actual = totales(ventasEntre(ahora - periodo * DIA, ahora)), previo = totales(ventasEntre(ahora - 2 * periodo * DIA, ahora - periodo * DIA));
+    var hoyT = totales(ventasEntre(hoy, ahora)), ayerT = totales(ventasEntre(hoy - DIA, ahora - DIA));
+    function delta(a, b) { if (!b) return ''; var d = (a - b) / b * 100; return '<small class="' + (d >= 0 ? 'up' : 'down') + '">' + (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d).toFixed(0) + '% </small>'; }
+    var h = '<div class="head"><div><h1>Resumen</h1><p>' + new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date()) + '</p></div>';
+    h += '<div class="seg" role="group" aria-label="Período"><button type="button" data-periodo="7" aria-pressed="' + (periodo === 7) + '">7 días</button><button type="button" data-periodo="30" aria-pressed="' + (periodo === 30) + '">30 días</button></div></div>';
+    h += '<div class="kpis">';
+    h += '<div class="kpi"><span>Ventas de hoy</span><b>' + peso.format(hoyT.monto) + '</b>' + delta(hoyT.monto, ayerT.monto) + '<small style="color:var(--muted)">vs. ayer a esta hora</small></div>';
+    h += '<div class="kpi"><span>Ventas ' + periodo + ' días</span><b>' + peso.format(actual.monto) + '</b>' + delta(actual.monto, previo.monto) + '<small style="color:var(--muted)">vs. los ' + periodo + ' anteriores</small></div>';
+    h += '<div class="kpi"><span>Ticket promedio</span><b>' + peso.format(actual.ticket) + '</b>' + delta(actual.ticket, previo.ticket) + '<small style="color:var(--muted)">' + actual.tickets + ' ventas</small></div>';
+    h += '<div class="kpi"><span>Margen bruto</span><b>' + (actual.margen * 100).toFixed(1) + '%</b><small style="color:var(--muted)">' + peso.format(actual.monto - actual.costo) + ' de ganancia</small></div>';
+    h += '</div><div class="grid2"><section class="card"><div class="card-head"><h2>Ventas por día</h2><small>Últimos ' + periodo + ' días · las barras claras son domingos cerrados</small></div>' + grafico(periodo) + '</section>';
+    var alertas = db.productos.map(function (p) { return { p: p, e: estado(p) }; }).filter(function (x) { return x.e.nivel !== 'ok'; }).sort(function (a, b) { return a.e.dias - b.e.dias; });
+    h += '<section class="card"><div class="card-head"><h2>Stock para reponer</h2><button class="link-btn" type="button" data-ir="reponer">Armar pedido ›</button></div><div class="alert-list">';
+    if (!alertas.length) h += '<p class="empty">Todo el stock está bien.</p>';
+    alertas.slice(0, 4).forEach(function (x) {
+      h += '<div class="alert ' + x.e.nivel + '"><b>' + esc(x.p.nombre) + '</b><small>Quedan ' + cantTxt(x.p, x.p.stock) + ' · ' + (x.p.stock <= 0 ? 'sin stock' : 'alcanza ' + diasTxt(x.e.dias)) + '</small><span class="tag">' + (x.e.nivel === 'bad' ? 'Agotado' : 'Bajo') + '</span></div>';
+    });
+    if (alertas.length > 4) h += '<button class="link-btn" type="button" data-ir="reponer">Ver los ' + alertas.length + ' productos ›</button>';
+    h += '</div></section></div>';
+    // Ranking de productos y margen por categoría.
+    var porProd = {}, porCat = {};
+    ventasEntre(ahora - periodo * DIA, ahora).forEach(function (v) { v.items.forEach(function (it) {
+      var p = prod(it.p); if (!p) return;
+      porProd[it.p] = (porProd[it.p] || 0) + it.cant * it.precio;
+      var c = porCat[p.cat] || (porCat[p.cat] = { m: 0, c: 0 }); c.m += it.cant * it.precio; c.c += it.cant * it.costo;
+    }); });
+    var top = Object.keys(porProd).sort(function (a, b) { return porProd[b] - porProd[a]; }).slice(0, 6), max = porProd[top[0]] || 1;
+    h += '<div class="grid2"><section class="card"><div class="card-head"><h2>Más vendidos</h2><small>Por facturación</small></div>';
+    top.forEach(function (id) { h += '<div class="hbar"><span>' + esc(prod(id).nombre) + '</span><em>' + peso.format(porProd[id]) + '</em><div class="t"><i style="width:' + (porProd[id] / max * 100) + '%"></i></div></div>'; });
+    h += '</section><section class="card"><div class="card-head"><h2>Margen por categoría</h2><small>Ganancia sobre ventas</small></div>';
+    Object.keys(porCat).sort(function (a, b) { return porCat[b].m - porCat[a].m; }).forEach(function (c) {
+      var m = (porCat[c].m - porCat[c].c) / porCat[c].m;
+      h += '<div class="hbar"><span>' + esc(c) + '</span><em>' + (m * 100).toFixed(0) + '%</em><div class="t"><i style="width:' + (m * 100 / 0.6 * 100 / 100) + '%"></i></div></div>';
+    });
+    h += '</section></div>';
+    $vista.innerHTML = h;
+  }
+  // Barras por día dibujadas en SVG, sin librerías.
+  function grafico(dias) {
+    var hoy = dia0(new Date()).getTime(), datos = [];
+    for (var i = dias - 1; i >= 0; i--) {
+      var d = hoy - i * DIA;
+      datos.push({ d: new Date(d), m: totales(ventasEntre(d, d + DIA)).monto });
+    }
+    var W = 640, H = 300, pl = 46, pb = 24, pt = 10, max = Math.max.apply(null, datos.map(function (x) { return x.m; })) || 1;
+    var paso = Math.pow(10, Math.floor(Math.log10(max))) * (max / Math.pow(10, Math.floor(Math.log10(max))) > 5 ? 2 : 1);
+    var tope = Math.ceil(max / paso) * paso, bw = (W - pl) / datos.length;
+    var s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Ventas por día de los últimos ' + dias + ' días">';
+    for (var y = 0; y <= tope; y += paso) {
+      var yy = H - pb - (y / tope) * (H - pb - pt);
+      s += '<line x1="' + pl + '" x2="' + W + '" y1="' + yy + '" y2="' + yy + '" stroke="var(--line)" stroke-width="1"/><text x="' + (pl - 6) + '" y="' + (yy + 4) + '" text-anchor="end">' + (y >= 1000 ? Math.round(y / 1000) + 'k' : y) + '</text>';
+    }
+    datos.forEach(function (x, i) {
+      var h = (x.m / tope) * (H - pb - pt), cerrado = x.d.getDay() === 0;
+      var bx = pl + i * bw + bw * 0.15;
+      if (cerrado) s += '<rect x="' + bx + '" y="' + (H - pb - 4) + '" width="' + (bw * 0.7) + '" height="4" rx="2" fill="var(--chart-2)"/>';
+      else s += '<rect x="' + bx + '" y="' + (H - pb - h) + '" width="' + (bw * 0.7) + '" height="' + h + '" rx="' + Math.min(4, bw * 0.2) + '" fill="var(--chart)" opacity="' + (i === datos.length - 1 ? 0.55 : 1) + '"><title>' + fDia.format(x.d) + ': ' + peso.format(x.m) + '</title></rect>';
+      var cada = dias > 10 ? 7 : 1;
+      if ((datos.length - 1 - i) % cada === 0) s += '<text x="' + (bx + bw * 0.35) + '" y="' + (H - 6) + '" text-anchor="middle">' + (i === datos.length - 1 ? 'hoy' : fDia.format(x.d).replace('.', '')) + '</text>';
+    });
+    return s + '</svg>';
+  }
+
+  function vProductos() {
+    var lista = db.productos.filter(function (p) {
+      return (!filtroCat || p.cat === filtroCat) && (!busqueda || p.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').indexOf(busqueda) >= 0);
+    });
+    var h = '<div class="head"><div><h1>Productos</h1><p>' + db.productos.length + ' productos · valor del stock a costo ' + peso.format(db.productos.reduce(function (a, p) { return a + p.stock * p.costo; }, 0)) + '</p></div><button class="btn" type="button" data-nuevo>+ Nuevo producto</button></div>';
+    h += '<div class="toolbar"><input type="search" id="buscar" placeholder="Buscar producto" value="' + esc(busqueda) + '" aria-label="Buscar producto"><select id="filtro-cat" aria-label="Categoría"><option value="">Todas las categorías</option>' + CATEGORIAS.map(function (c) { return '<option' + (c === filtroCat ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></div>';
+    h += '<div class="table-wrap"><table><thead><tr><th>Producto</th><th>Proveedor</th><th class="num">Precio</th><th class="num">Margen</th><th>Stock</th><th class="num">Vende por día</th><th>Alcanza</th><th></th></tr></thead><tbody>';
+    lista.forEach(function (p) {
+      var e = estado(p), pct = Math.min(100, p.stock / Math.max(p.min * 2.5, 0.1) * 100);
+      h += '<tr><td><b>' + esc(p.nombre) + '</b><small>' + esc(p.cat) + '</small></td><td>' + PROVEEDORES[p.prov].nombre + '</td><td class="num">' + peso.format(p.precio) + '<small>' + (p.unidad === 'kg' ? 'por kg' : 'por unidad') + '</small></td><td class="num">' + ((p.precio - p.costo) / p.precio * 100).toFixed(0) + '%</td>';
+      h += '<td><span class="stockbar ' + (e.nivel === 'ok' ? '' : e.nivel) + '"><i style="width:' + pct + '%"></i></span>' + cantTxt(p, p.stock) + '<small>mínimo ' + cantTxt(p, p.min) + '</small></td><td class="num">' + cantTxt(p, Math.round(e.ritmo * 10) / 10) + '</td>';
+      h += '<td><span class="pill ' + e.nivel + '">' + (p.stock <= 0 ? 'Agotado' : diasTxt(e.dias)) + '</span></td><td><button class="mini-btn" type="button" data-editar="' + p.id + '">Editar</button></td></tr>';
+    });
+    if (!lista.length) h += '<tr><td colspan="8" class="empty">No hay productos con ese filtro.</td></tr>';
+    $vista.innerHTML = h + '</tbody></table></div>';
+  }
+
+  function vVender() {
+    var h = '<div class="head"><div><h1>Registrar venta</h1><p>Tocá los productos para sumarlos. Al confirmar, el stock se descuenta solo.</p></div></div><div class="pos"><section><div class="toolbar"><input type="search" id="buscar-venta" placeholder="Buscar producto" value="' + esc(busqueda) + '" aria-label="Buscar producto"></div><div class="prod-grid">';
+    db.productos.filter(function (p) { return !busqueda || p.nombre.toLowerCase().indexOf(busqueda) >= 0; }).forEach(function (p) {
+      h += '<button class="prod" type="button" data-sumar="' + p.id + '"' + (p.stock <= 0 ? ' disabled' : '') + '><b>' + esc(p.nombre) + '</b><span>' + peso.format(p.precio) + (p.unidad === 'kg' ? '/kg' : '') + ' · ' + (p.stock <= 0 ? 'sin stock' : 'hay ' + cantTxt(p, p.stock)) + '</span></button>';
+    });
+    h += '</div></section><section class="card ticket"><h2>Venta</h2>';
+    if (!ticket.length) h += '<p class="empty">Todavía no sumaste productos.</p>';
+    var total = 0;
+    ticket.forEach(function (it, i) {
+      var p = prod(it.p), sub = it.cant * p.precio; total += sub;
+      h += '<div class="line"><span>' + esc(p.nombre) + '<br><small style="color:var(--muted)">' + peso.format(p.precio) + (p.unidad === 'kg' ? '/kg' : ' c/u') + '</small></span><span class="qty"><button type="button" data-menos="' + i + '" aria-label="Menos">−</button><span>' + num.format(it.cant) + (p.unidad === 'kg' ? ' kg' : '') + '</span><button type="button" data-mas="' + i + '" aria-label="Más">+</button></span><b>' + peso.format(sub) + '</b></div>';
+    });
+    h += '<div class="total"><span>Total</span><span>' + peso.format(total) + '</span></div>';
+    h += '<div class="pay" role="group" aria-label="Medio de pago">' + ['efectivo', 'transferencia', 'tarjeta'].map(function (m) { return '<button type="button" data-pago="' + m + '" aria-pressed="' + (pago === m) + '">' + m.charAt(0).toUpperCase() + m.slice(1) + '</button>'; }).join('') + '</div>';
+    h += '<button class="btn" type="button" data-cobrar style="width:100%;justify-content:center"' + (ticket.length ? '' : ' disabled') + '>Confirmar venta</button></section></div>';
+    $vista.innerHTML = h;
+  }
+  function pasoCant(p) { return p.unidad === 'kg' ? 0.25 : 1; }
+
+  function vReponer() {
+    var porProv = {};
+    db.productos.forEach(function (p) {
+      var e = estado(p);
+      if (e.nivel === 'ok') return;
+      (porProv[p.prov] = porProv[p.prov] || []).push({ p: p, e: e });
+    });
+    var h = '<div class="head"><div><h1>Reponer</h1><p>Productos con stock bajo agrupados por proveedor, con un pedido sugerido.</p></div></div>';
+    h += '<p class="note">La cantidad sugerida cubre lo que se vende mientras llega el pedido más dos semanas, según el promedio de las últimas cuatro. Se redondea a bolsas de 5 kg o cajas de 6 unidades, y se puede cambiar antes de mandar el pedido.</p>';
+    var provs = Object.keys(porProv);
+    if (!provs.length) h += '<p class="empty">No hay nada para reponer.</p>';
+    provs.forEach(function (k) {
+      var prov = PROVEEDORES[k], items = porProv[k], total = 0;
+      h += '<section class="card supplier"><div class="card-head"><h2>' + prov.nombre + '</h2><small>Entrega en ' + prov.dias + ' días hábiles</small></div><div class="table-wrap" style="border:0"><table><thead><tr><th>Producto</th><th>Stock</th><th>Alcanza</th><th class="num">Vende por día</th><th class="num">Pedir</th><th class="num">Costo</th></tr></thead><tbody>';
+      items.forEach(function (x) {
+        var cant = sugeridos[x.p.id] != null ? sugeridos[x.p.id] : x.e.sugerido; total += cant * x.p.costo;
+        h += '<tr><td><b>' + esc(x.p.nombre) + '</b></td><td>' + cantTxt(x.p, x.p.stock) + '</td><td><span class="pill ' + x.e.nivel + '">' + (x.p.stock <= 0 ? 'Agotado' : diasTxt(x.e.dias)) + '</span></td><td class="num">' + cantTxt(x.p, Math.round(x.e.ritmo * 10) / 10) + '</td><td class="num"><input class="sug-input" type="number" min="0" step="' + pasoCant(x.p) + '" value="' + cant + '" data-sug="' + x.p.id + '" aria-label="Cantidad a pedir de ' + esc(x.p.nombre) + '"> ' + (x.p.unidad === 'kg' ? 'kg' : 'u') + '</td><td class="num">' + peso.format(cant * x.p.costo) + '</td></tr>';
+      });
+      h += '</tbody></table></div><div class="supplier-actions"><a class="btn" href="' + waPedido(k, items) + '" target="_blank" rel="noopener">Mandar pedido por WhatsApp</a><button class="btn ghost" type="button" data-copiar="' + k + '">Copiar pedido</button><button class="btn ghost" type="button" data-recibir="' + k + '">Registrar que llegó</button><span style="margin-left:auto;align-self:center;font-weight:700">' + peso.format(total) + '</span></div></section>';
+    });
+    $vista.innerHTML = h;
+  }
+  function textoPedido(k, items) {
+    return 'Hola, ' + PROVEEDORES[k].nombre + '. Les paso el pedido de Dietética Raíz:\n' + items.map(function (x) {
+      var c = sugeridos[x.p.id] != null ? sugeridos[x.p.id] : x.e.sugerido;
+      return c > 0 ? '• ' + x.p.nombre + ': ' + cantTxt(x.p, c) : null;
+    }).filter(Boolean).join('\n') + '\n¡Gracias!';
+  }
+  function waPedido(k, items) { return 'https://wa.me/' + PROVEEDORES[k].wa + '?text=' + encodeURIComponent(textoPedido(k, items)); }
+  function itemsDe(k) { return db.productos.filter(function (p) { return p.prov === k; }).map(function (p) { return { p: p, e: estado(p) }; }).filter(function (x) { return x.e.nivel !== 'ok'; }); }
+
+  function vMovimientos() {
+    var movs = [];
+    db.ventas.slice(-60).forEach(function (v) { var t = totales([v]); movs.push({ t: v.t, tipo: 'Venta', det: v.items.map(function (it) { var p = prod(it.p); return p ? p.nombre + ' × ' + cantTxt(p, it.cant) : ''; }).join(', '), monto: t.monto, extra: v.pago }); });
+    db.ingresos.forEach(function (i) { var p = prod(i.p); if (p) movs.push({ t: i.t, tipo: 'Ingreso', det: p.nombre + ' × ' + cantTxt(p, i.cant), monto: -i.cant * i.costo, extra: PROVEEDORES[p.prov].nombre }); });
+    movs.sort(function (a, b) { return b.t - a.t; });
+    var h = '<div class="head"><div><h1>Movimientos</h1><p>Ventas e ingresos de mercadería, del más nuevo al más viejo.</p></div></div><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th></th><th class="num">Importe</th></tr></thead><tbody>';
+    movs.slice(0, 60).forEach(function (m) {
+      h += '<tr><td>' + fHora.format(new Date(m.t)) + '</td><td><span class="pill ' + (m.tipo === 'Venta' ? 'ok' : 'warn') + '">' + m.tipo + '</span></td><td style="white-space:normal;min-width:260px">' + esc(m.det) + '</td><td><small>' + esc(m.extra) + '</small></td><td class="num">' + peso.format(m.monto) + '</td></tr>';
+    });
+    $vista.innerHTML = h + '</tbody></table></div>';
+  }
+
+  // ---------- Producto: alta y edición ----------
+  var dlg = document.getElementById('dlg-producto'), form = document.getElementById('form-producto'), editando = null;
+  form.cat.innerHTML = CATEGORIAS.map(function (c) { return '<option>' + c + '</option>'; }).join('');
+  form.prov.innerHTML = Object.keys(PROVEEDORES).map(function (k) { return '<option value="' + k + '">' + PROVEEDORES[k].nombre + '</option>'; }).join('');
+  function abrirProducto(p) {
+    editando = p;
+    document.getElementById('dlg-titulo').textContent = p ? 'Editar producto' : 'Nuevo producto';
+    form.nombre.value = p ? p.nombre : ''; form.cat.value = p ? p.cat : CATEGORIAS[0]; form.prov.value = p ? p.prov : 'natural';
+    form.costo.value = p ? p.costo : ''; form.precio.value = p ? p.precio : ''; form.stock.value = p ? p.stock : ''; form.min.value = p ? p.min : '';
+    dlg.showModal();
+  }
+  dlg.addEventListener('close', function () {
+    if (dlg.returnValue !== 'guardar') return;
+    var datos = { nombre: form.nombre.value.trim(), cat: form.cat.value, prov: form.prov.value, costo: +form.costo.value, precio: +form.precio.value, stock: +form.stock.value, min: +form.min.value };
+    if (!datos.nombre) return;
+    if (datos.precio < datos.costo) avisar('Ojo: el precio quedó por debajo del costo.');
+    if (editando) Object.assign(editando, datos);
+    else db.productos.push(Object.assign({ id: 'p' + Date.now(), unidad: 'u' }, datos));
+    guardar(); render();
+  });
+
+  // ---------- Eventos ----------
+  document.querySelector('nav.menu').addEventListener('click', function (e) { var b = e.target.closest('[data-vista]'); if (!b) return; vista = b.dataset.vista; busqueda = ''; render(); window.scrollTo(0, 0); });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var d = b.dataset;
+    if (d.periodo) { periodo = +d.periodo; render(); }
+    if (d.ir) { vista = d.ir; render(); }
+    if ('nuevo' in d) abrirProducto(null);
+    if (d.editar) abrirProducto(prod(d.editar));
+    if (d.sumar) {
+      var p = prod(d.sumar), it = ticket.find(function (x) { return x.p === p.id; });
+      if (it) { if (it.cant + pasoCant(p) <= p.stock) it.cant += pasoCant(p); else avisar('No hay más stock de ' + p.nombre + '.'); }
+      else ticket.push({ p: p.id, cant: p.unidad === 'kg' ? Math.min(0.5, p.stock) : 1 });
+      render();
+    }
+    if (d.mas) { var i1 = ticket[+d.mas], p1 = prod(i1.p); if (i1.cant + pasoCant(p1) <= p1.stock) i1.cant += pasoCant(p1); else avisar('No hay más stock.'); render(); }
+    if (d.menos) { var i2 = ticket[+d.menos]; i2.cant -= pasoCant(prod(i2.p)); if (i2.cant <= 0) ticket.splice(+d.menos, 1); render(); }
+    if (d.pago) { pago = d.pago; render(); }
+    if ('cobrar' in d) {
+      var venta = { id: 'v' + Date.now(), t: Date.now(), pago: pago, items: ticket.map(function (it) { var p = prod(it.p); p.stock = Math.round((p.stock - it.cant) * 100) / 100; return { p: p.id, cant: it.cant, precio: p.precio, costo: p.costo }; }) };
+      db.ventas.push(venta); ticket = []; guardar();
+      var bajos = venta.items.map(function (it) { return prod(it.p); }).filter(function (p) { return estado(p).nivel !== 'ok'; });
+      avisar('Venta registrada.' + (bajos.length ? ' Quedó bajo: ' + bajos.map(function (p) { return p.nombre; }).join(', ') + '.' : ''));
+      render();
+    }
+    if (d.copiar) {
+      var txt = textoPedido(d.copiar, itemsDe(d.copiar));
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { avisar('Pedido copiado.'); }, function () { prompt('Copiá el pedido:', txt); });
+    }
+    if (d.recibir) {
+      itemsDe(d.recibir).forEach(function (x) {
+        var c = sugeridos[x.p.id] != null ? sugeridos[x.p.id] : x.e.sugerido;
+        if (c > 0) { x.p.stock = Math.round((x.p.stock + c) * 100) / 100; db.ingresos.push({ t: Date.now(), p: x.p.id, cant: c, costo: x.p.costo }); }
+        delete sugeridos[x.p.id];
+      });
+      guardar(); avisar('Mercadería ingresada al stock.'); render();
+    }
+    if ('reiniciar' in d) { if (confirm('¿Volver a los datos de ejemplo? Se pierden los cambios que hiciste.')) { db = ejemplo(); guardar(); ticket = []; sugeridos = {}; render(); } }
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target.id === 'buscar' || e.target.id === 'buscar-venta') {
+      busqueda = e.target.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      var pos = e.target.selectionStart, id = e.target.id;
+      render(); var el = document.getElementById(id); el.focus(); el.setSelectionRange(pos, pos);
+    }
+  });
+  document.addEventListener('change', function (e) {
+    if (e.target.id === 'filtro-cat') { filtroCat = e.target.value; render(); }
+    if (e.target.dataset.sug) { sugeridos[e.target.dataset.sug] = Math.max(0, +e.target.value || 0); render(); }
+  });
+
+  cargar(); guardar();
+  var v = new URLSearchParams(location.search).get('vista');
+  if (['resumen', 'productos', 'vender', 'reponer', 'movimientos'].indexOf(v) >= 0) vista = v;
+  render();
+})();
+</script>
+</body>
+</html>

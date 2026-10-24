@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot de WhatsApp, Pizzería Napo</title>
+<meta name="description" content="Demo de un bot de WhatsApp para atención al cliente: responde preguntas frecuentes, toma pedidos y deriva a una persona cuando hace falta.">
+<meta name="theme-color" content="#EDEAE4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111513" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EDEAE4;
+    --surface: #FFFFFF;
+    --soft: #F6F4F0;
+    --ink: #1B1A17;
+    --muted: #67635B;
+    --line: #DDD8CF;
+    --accent: #C2410C;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #FBE5D8;
+    --ok: #15803D;
+    --ok-soft: #DCF3E3;
+    --warn: #A16207;
+    --warn-soft: #FBF0CF;
+    --chat-bg: #EFE7DD;
+    --in: #FFFFFF;
+    --out: #D9FDD3;
+    --wa: #128C7E;
+    --wa-ink: #FFFFFF;
+    color-scheme: light;
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111513;
+      --surface: #1A1F1C;
+      --soft: #212723;
+      --ink: #E8ECE9;
+      --muted: #9CA69F;
+      --line: #2F3732;
+      --accent: #FB923C;
+      --accent-ink: #1F0E03;
+      --accent-soft: #3B2416;
+      --ok: #4ADE80;
+      --ok-soft: #173123;
+      --warn: #FACC15;
+      --warn-soft: #332B0E;
+      --chat-bg: #0B141A;
+      --in: #202C33;
+      --out: #005C4B;
+      --wa: #1F2C33;
+      --wa-ink: #E9EDEF;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 400 14.5px/1.45 var(--body); }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .app { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 24px; max-width: 1500px; margin: 0 auto; padding: 22px clamp(16px, 3vw, 32px); min-height: 100vh; }
+  .side-title { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 0 0 8px; }
+
+  /* Teléfono con el chat del cliente */
+  .phone { background: #111; border-radius: 36px; padding: 10px; box-shadow: 0 24px 50px -24px rgba(0,0,0,.5); height: calc(100vh - 70px); min-height: 620px; max-height: 900px; }
+  .screen { border-radius: 28px; overflow: hidden; height: 100%; display: grid; grid-template-rows: auto 1fr auto; background: var(--chat-bg); }
+  .wa-head { background: var(--wa); color: var(--wa-ink); display: flex; align-items: center; gap: 10px; padding: 14px 14px 10px; }
+  .wa-av { width: 38px; height: 38px; border-radius: 50%; background: #F59E0B; color: #3B1D02; display: grid; place-items: center; font: 800 .95rem var(--display); flex: none; }
+  .wa-head b { display: block; font-weight: 600; font-size: .95rem; }
+  .wa-head small { opacity: .8; font-size: .75rem; }
+  .verified { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: #25D366; color: #fff; font-size: 9px; text-align: center; line-height: 14px; vertical-align: 1px; margin-left: 3px; }
+  .chat { overflow-y: auto; padding: 12px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .b { max-width: 82%; padding: 6px 9px 4px; border-radius: 9px; font-size: .9rem; line-height: 1.35; box-shadow: 0 1px 0 rgba(0,0,0,.08); white-space: pre-line; word-wrap: break-word; }
+  .b.in { align-self: flex-start; background: var(--in); border-top-left-radius: 2px; }
+  .b.out { align-self: flex-end; background: var(--out); border-top-right-radius: 2px; }
+  .b .meta { display: block; text-align: right; font-size: .66rem; color: var(--muted); margin-top: 2px; }
+  .b .who { display: block; font-size: .72rem; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
+  .b.gap { margin-top: 6px; }
+  .opts { align-self: flex-start; max-width: 82%; display: grid; gap: 3px; margin-top: 2px; }
+  .opts button { background: var(--in); border: 0; border-radius: 9px; padding: 8px 12px; color: #027EB5; font-weight: 600; font-size: .86rem; text-align: center; box-shadow: 0 1px 0 rgba(0,0,0,.08); }
+  @media (prefers-color-scheme: dark) { .opts button { color: #53BDEB; } }
+  .opts button:disabled { opacity: .55; cursor: default; }
+  .sys { align-self: center; background: var(--warn-soft); color: var(--ink); font-size: .74rem; padding: 4px 10px; border-radius: 8px; margin: 6px 0; text-align: center; max-width: 90%; }
+  .typing { align-self: flex-start; background: var(--in); border-radius: 9px; padding: 8px 12px; display: flex; gap: 4px; }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: tp 1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes tp { 0%, 60%, 100% { opacity: .3; } 30% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .typing i { animation: none; } }
+  form.compose { display: flex; gap: 6px; padding: 8px; background: transparent; }
+  form.compose input { flex: 1; border: 0; border-radius: 22px; padding: 10px 14px; background: var(--in); }
+  form.compose button { width: 42px; height: 42px; border-radius: 50%; border: 0; background: #00A884; color: #fff; display: grid; place-items: center; flex: none; }
+  form.compose button svg { width: 20px; height: 20px; }
+
+  /* Panel del equipo */
+  .panel { min-width: 0; display: grid; grid-template-rows: auto auto 1fr; gap: 14px; }
+  .p-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+  .p-head h1 { font: 700 1.55rem/1.1 var(--display); margin: 0; letter-spacing: -.01em; }
+  .p-head p { margin: 4px 0 0; color: var(--muted); }
+  .p-head a, .p-head button.link { color: var(--muted); font-size: .8rem; background: none; border: 0; padding: 0; text-decoration: underline; }
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .kpi span { color: var(--muted); font-size: .78rem; font-weight: 600; }
+  .kpi b { display: block; font: 700 1.5rem/1.2 var(--display); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .kpi small { color: var(--muted); font-size: .75rem; }
+  .work { display: grid; grid-template-columns: 300px minmax(0, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; height: max(460px, calc(100vh - 250px)); }
+  .convs { border-right: 1px solid var(--line); overflow-y: auto; }
+  .tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--line); }
+  .tabs button { border: 0; background: none; padding: 6px 10px; border-radius: 8px; font-weight: 600; font-size: .82rem; color: var(--muted); }
+  .tabs button[aria-pressed="true"] { background: var(--soft); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .tabs .n { background: var(--accent); color: var(--accent-ink); border-radius: 99px; font-size: .68rem; padding: 0 6px; margin-left: 4px; }
+  .conv { display: grid; grid-template-columns: 36px 1fr auto; gap: 2px 10px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 11px 12px; }
+  .conv:hover { background: var(--soft); }
+  .conv[aria-current="true"] { background: var(--accent-soft); }
+  .conv .av { grid-row: 1 / 3; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .85rem; color: #fff; }
+  .conv b { font-weight: 600; font-size: .88rem; }
+  .conv small { color: var(--muted); font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; grid-column: 2 / 4; }
+  .conv time { font-size: .72rem; color: var(--muted); }
+  .st { display: inline-block; font-size: .68rem; font-weight: 700; padding: 1px 7px; border-radius: 99px; margin-left: 4px; vertical-align: 1px; }
+  .st.bot { background: var(--soft); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+  .st.esperando { background: var(--accent-soft); color: var(--accent); }
+  .st.humano { background: var(--warn-soft); color: var(--warn); }
+  .st.pedido, .st.resuelta { background: var(--ok-soft); color: var(--ok); }
+  .detail { display: grid; grid-template-rows: auto 1fr auto; min-width: 0; min-height: 0; }
+  .d-head { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .d-head b { font-weight: 600; }
+  .d-head .sp { flex: 1; }
+  .reason { font-size: .8rem; color: var(--accent); background: var(--accent-soft); border-radius: 8px; padding: 3px 9px; font-weight: 600; }
+  .btn { border: 0; background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: 8px 13px; font-weight: 600; font-size: .85rem; }
+  .btn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .log { overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; background: var(--soft); min-height: 0; }
+  .lm { max-width: 76%; padding: 7px 11px; border-radius: 10px; font-size: .86rem; white-space: pre-line; }
+  .lm.c { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); }
+  .lm.b, .lm.h { align-self: flex-end; }
+  .lm.b { background: var(--surface); border: 1px dashed var(--line); color: var(--muted); }
+  .lm.h { background: var(--accent-soft); }
+  .lm small { display: block; font-size: .7rem; color: var(--muted); margin-bottom: 2px; font-weight: 600; }
+  .lm.s { align-self: center; font-size: .75rem; color: var(--muted); background: none; padding: 2px; }
+  form.reply { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
+  form.reply input { flex: 1; border: 1px solid var(--line); background: var(--soft); border-radius: 10px; padding: 9px 12px; }
+  .quick { display: flex; gap: 6px; padding: 0 12px 10px; flex-wrap: wrap; }
+  .quick button { border: 1px solid var(--line); background: var(--soft); border-radius: 99px; padding: 4px 10px; font-size: .78rem; }
+  .hint { padding: 12px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
+  .orders { padding: 12px; display: grid; gap: 8px; }
+  .order { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: .85rem; }
+  .order b { font-weight: 700; }
+  .order small { display: block; color: var(--muted); }
+  .order .row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .order select { font: inherit; font-size: .78rem; border: 1px solid var(--line); border-radius: 8px; background: var(--soft); padding: 3px 6px; color: inherit; }
+
+  @media (max-width: 1100px) { .work { grid-template-columns: 1fr; height: auto; } .log { max-height: 480px; } .convs { border-right: 0; border-bottom: 1px solid var(--line); max-height: 300px; } .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 860px) {
+    .app { grid-template-columns: 1fr; }
+    .phone { height: 78vh; min-height: 520px; border-radius: 28px; padding: 6px; }
+    .screen { border-radius: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <section aria-label="Chat del cliente">
+    <p class="side-title">Lo que ve el cliente en WhatsApp</p>
+    <div class="phone">
+      <div class="screen">
+        <div class="wa-head"><span class="wa-av" aria-hidden="true">N</span><div><b>Pizzería Napo <span class="verified" aria-label="Cuenta verificada">✓</span></b><small>Cuenta de empresa · responde al instante</small></div></div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <form class="compose" id="compose">
+          <label for="msg" style="position:absolute;left:-9999px">Mensaje</label>
+          <input id="msg" autocomplete="off" placeholder="Escribí un mensaje" maxlength="300">
+          <button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4l17.4-7.5c.8-.4.8-1.5 0-1.8L3.4 3.6c-.7-.3-1.4.3-1.3 1l1 6.4 9.9 1-9.9 1-1 6.4c-.1.7.6 1.3 1.3 1z"/></svg></button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-label="Panel del equipo">
+    <div class="p-head">
+      <div><h1>Panel del equipo</h1><p>El bot atiende primero. Cuando hace falta una persona, la conversación aparece acá.</p></div>
+      <div style="text-align:right"><a href="../../bot-whatsapp.html">Demo de Juan Mattolini</a> · <button class="link" type="button" data-reiniciar>Empezar de nuevo</button></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="work">
+      <div class="convs">
+        <div class="tabs" role="group" aria-label="Vista">
+          <button type="button" data-tab="convs" aria-pressed="true">Conversaciones</button>
+          <button type="button" data-tab="pedidos" aria-pressed="false">Pedidos</button>
+        </div>
+        <div id="lista"></div>
+      </div>
+      <div class="detail" id="detalle"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Bot de WhatsApp (demo). El chat de la izquierda simula al cliente; el panel de la derecha es lo que ve el local.
+// En la versión real los mensajes llegan por la API de WhatsApp Business a una función en el servidor,
+// que usa esta misma lógica y guarda todo en Supabase.
+(function () {
+  var CLAVE = 'bot-napo-v1';
+  var CARTA = [
+    { id: 'muzza', nombre: 'Muzzarella', plural: 'Muzzarellas', precio: 9800, claves: ['muzza', 'muzzarella', 'mozzarella', 'muza'] },
+    { id: 'napo', nombre: 'Napolitana', plural: 'Napolitanas', precio: 11200, claves: ['napo', 'napolitana'] },
+    { id: 'fuga', nombre: 'Fugazzeta', plural: 'Fugazzetas', precio: 11500, claves: ['fugazzeta', 'fugazeta', 'fuga'] },
+    { id: 'jamon', nombre: 'Jamón y morrones', precio: 12400, claves: ['jamon', 'morron', 'morrones'] },
+    { id: 'cuatro', nombre: 'Cuatro quesos', precio: 13600, claves: ['cuatro quesos', '4 quesos', 'quesos'] },
+    { id: 'empa', nombre: 'Empanada', plural: 'Empanadas', unidad: true, precio: 1500, claves: ['empanada', 'empanadas', 'empa'] },
+    { id: 'faina', nombre: 'Fainá', plural: 'Fainás', precio: 2200, claves: ['faina'] }
+  ];
+  var ENVIO = 1500;
+  var ZONAS = ['palermo', 'villa crespo', 'almagro', 'chacarita', 'colegiales', 'caballito'];
+  var OPERADORA = 'Sofía';
+  var NUMEROS = { uno: 1, una: 1, un: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, media: 0.5, docena: 12 };
+
+  var $chat = document.getElementById('chat'), $lista = document.getElementById('lista'), $detalle = document.getElementById('detalle'), $kpis = document.getElementById('kpis');
+  var peso = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  function hora(t) { return new Date(t).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false }); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function negrita(s) { return esc(s).replace(/\*([^*\n]+)\*/g, '<b>$1</b>'); }
+  function normal(s) { return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
+  // ---------- Estado ----------
+  var db;
+  function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(db)); } catch (e) {} }
+  function cargar() {
+    try { db = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { db = null; }
+    if (!db || !db.convs) db = ejemplo();
+  }
+  // Otras conversaciones del día, para que el panel no arranque vacío.
+  function ejemplo() {
+    var ahora = Date.now(), m = 60000;
+    return {
+      siguiente: 1043,
+      vista: 'yo',
+      pedidos: [
+        { n: 1040, conv: 'caro', cliente: 'Carolina R.', items: [{ id: 'napo', cant: 1 }, { id: 'empa', cant: 6 }], entrega: 'Envío a Palermo', pago: 'Mercado Pago', total: 11200 + 9000 + ENVIO, estado: 'En camino', t: ahora - 38 * m },
+        { n: 1041, conv: 'nico', cliente: 'Nicolás F.', items: [{ id: 'muzza', cant: 2 }], entrega: 'Retira en el local', pago: 'Efectivo', total: 19600, estado: 'En el horno', t: ahora - 14 * m },
+        { n: 1042, conv: 'vale', cliente: 'Valeria S.', items: [{ id: 'cuatro', cant: 1 }, { id: 'faina', cant: 2 }], entrega: 'Envío a Almagro', pago: 'Transferencia', total: 13600 + 4400 + ENVIO, estado: 'Recibido', t: ahora - 4 * m }
+      ],
+      convs: [
+        { id: 'marta', nombre: 'Marta G.', color: '#7C3AED', estado: 'esperando', motivo: 'Reclamo: llegó frío', t: ahora - 3 * m, log: [
+          { de: 'c', txt: 'Hola, el pedido de recién llegó frío y tardó más de una hora', t: ahora - 4 * m },
+          { de: 'b', txt: 'Perdón, Marta. Esto lo tiene que ver una persona: ya le pasé tu mensaje al equipo y te responden en unos minutos.', t: ahora - 3 * m }] },
+        { id: 'vale', nombre: 'Valeria S.', color: '#0891B2', estado: 'pedido', motivo: 'Pedido #1042', t: ahora - 4 * m, log: [
+          { de: 'c', txt: 'Quiero una cuatro quesos y 2 fainá para Almagro', t: ahora - 7 * m },
+          { de: 'b', txt: 'Anoté: 1 Cuatro quesos y 2 Fainá. ¿Cómo pagás?', t: ahora - 7 * m },
+          { de: 'c', txt: 'Transferencia', t: ahora - 6 * m },
+          { de: 'b', txt: '¡Listo! Tu pedido es el *#1042*. Llega en 40 a 50 minutos.', t: ahora - 4 * m }] },
+        { id: 'lucas', nombre: 'Lucas P.', color: '#65A30D', estado: 'resuelta', motivo: 'Horarios', t: ahora - 22 * m, log: [
+          { de: 'c', txt: '¿Hasta qué hora abren hoy?', t: ahora - 23 * m },
+          { de: 'b', txt: 'Abrimos todos los días de 19 a 0 h, y viernes y sábados hasta la 1.', t: ahora - 22 * m }] },
+        { id: 'nico', nombre: 'Nicolás F.', color: '#DB2777', estado: 'pedido', motivo: 'Pedido #1041', t: ahora - 14 * m, log: [
+          { de: 'c', txt: '2 muzzas para retirar', t: ahora - 16 * m },
+          { de: 'b', txt: '¡Listo! Tu pedido es el *#1041*. Lo podés retirar en 25 minutos.', t: ahora - 14 * m }] }
+      ],
+      yo: { id: 'yo', nombre: 'Vos (cliente de prueba)', color: '#C2410C', estado: 'bot', motivo: '', t: ahora, log: [], paso: 'inicio', carrito: [], fallos: 0, entrega: null, pago: null }
+    };
+  }
+  function yo() { return db.yo; }
+  function todas() { return [db.yo].concat(db.convs); }
+  function conv(id) { return todas().find(function (c) { return c.id === id; }); }
+
+  // ---------- Mensajes ----------
+  // Cada mensaje queda en el registro de la conversación; el chat del teléfono solo muestra la del cliente de prueba.
+  function registrar(de, txt, extra) {
+    var c = yo(), m = Object.assign({ de: de, txt: txt, t: Date.now() }, extra || {});
+    c.log.push(m); c.t = m.t;
+    guardar(); pintarChat(); pintarPanel();
+  }
+  var cola = Promise.resolve();
+  function bot(txt, opciones) {
+    cola = cola.then(function () {
+      var tipeando = document.createElement('div'); tipeando.className = 'typing'; tipeando.innerHTML = '<i></i><i></i><i></i>';
+      $chat.appendChild(tipeando); $chat.scrollTop = $chat.scrollHeight;
+      return new Promise(function (ok) { setTimeout(function () { tipeando.remove(); registrar('b', txt, opciones ? { opciones: opciones } : null); ok(); }, Math.min(900, 300 + txt.length * 6)); });
+    });
+  }
+  function sistema(txt) { cola = cola.then(function () { registrar('s', txt); }); }
+
+  function pintarChat() {
+    var h = '', c = yo(), ultimoDe = null;
+    c.log.forEach(function (m, i) {
+      if (m.de === 's') { h += '<div class="sys">' + esc(m.txt) + '</div>'; ultimoDe = null; return; }
+      var lado = m.de === 'c' ? 'out' : 'in';
+      h += '<div class="b ' + lado + (ultimoDe !== lado ? ' gap' : '') + '">' + (m.de === 'h' ? '<span class="who">' + OPERADORA + ' · Pizzería Napo</span>' : '') + negrita(m.txt) + '<span class="meta">' + hora(m.t) + (lado === 'out' ? ' ✓✓' : '') + '</span></div>';
+      if (m.opciones) {
+        var vigente = i === c.log.length - 1 || c.log.slice(i + 1).every(function (x) { return x.de !== 'c'; });
+        h += '<div class="opts">' + m.opciones.map(function (o) { return '<button type="button" data-op="' + esc(o) + '"' + (vigente && c.estado === 'bot' ? '' : ' disabled') + '>' + esc(o) + '</button>'; }).join('') + '</div>';
+      }
+      ultimoDe = lado;
+    });
+    $chat.innerHTML = h;
+    $chat.scrollTop = $chat.scrollHeight;
+  }
+
+  // ---------- Cerebro del bot ----------
+  var MENU = ['📋 Ver la carta', '🍕 Hacer un pedido', '🛵 Estado de mi pedido', '🕒 Horarios y envíos', '🙋 Hablar con una persona'];
+  function menu(txt) { bot(txt || '¿En qué te ayudo? Elegí una opción o escribime lo que necesitás.', MENU); }
+  function textoCarta() { return '*Nuestra carta*\n' + CARTA.map(function (p) { return '• ' + p.nombre + ': ' + peso.format(p.precio) + (p.unidad ? ' c/u' : ''); }).join('\n') + '\n\nEnvío ' + peso.format(ENVIO) + ' a ' + ZONAS.slice(0, -1).map(cap).join(', ') + ' y ' + cap(ZONAS[ZONAS.length - 1]) + '.'; }
+  function cap(s) { return s.replace(/\b\w/g, function (x) { return x.toUpperCase(); }); }
+
+  // Busca productos y cantidades en texto libre: "quiero 2 muzzas y media docena de empanadas".
+  function leerPedido(txt) {
+    var t = ' ' + normal(txt).replace(/[^a-z0-9 ]/g, ' ') + ' ', items = [];
+    CARTA.forEach(function (p) {
+      var clave = p.claves.find(function (k) { return t.indexOf(' ' + k) >= 0; });
+      if (!clave) return;
+      var antes = t.slice(0, t.indexOf(' ' + clave)).trim().split(/\s+/).slice(-3);
+      var cant = 1;
+      for (var i = antes.length - 1; i >= 0; i--) {
+        var w = antes[i];
+        if (/^\d+$/.test(w)) { cant = +w; break; }
+        if (w === 'docena') { cant = antes[i - 1] === 'media' ? 6 : 12; break; }
+        if (NUMEROS[w] && w !== 'media') { cant = NUMEROS[w]; break; }
+      }
+      items.push({ id: p.id, cant: Math.min(cant, 50) });
+    });
+    return items;
+  }
+  function plato(id) { return CARTA.find(function (p) { return p.id === id; }); }
+  function nombreCant(it) { var p = plato(it.id); return it.cant + ' ' + (it.cant > 1 && p.plural ? p.plural : p.nombre); }
+  function resumenCarrito(c) { return c.carrito.map(nombreCant).join(', '); }
+  function subtotal(c) { return c.carrito.reduce(function (a, it) { return a + it.cant * plato(it.id).precio; }, 0); }
+  function sumar(c, items) { items.forEach(function (it) { var ya = c.carrito.find(function (x) { return x.id === it.id; }); if (ya) ya.cant += it.cant; else c.carrito.push({ id: it.id, cant: it.cant }); }); }
+
+  function derivar(motivo, txt) {
+    var c = yo();
+    c.estado = 'esperando'; c.motivo = motivo; c.paso = 'inicio';
+    bot(txt || 'Te paso con una persona del equipo. En unos minutos te responden por acá mismo.');
+    sistema('El bot derivó la conversación al equipo');
+    guardar(); pintarPanel();
+  }
+
+  function entender(texto) {
+    var c = yo(), t = normal(texto);
+    if (c.estado !== 'bot') return; // Una persona del equipo está atendiendo: el bot no interviene.
+    // Enojo o reclamo: siempre a una persona, sin vueltas.
+    if (/reclamo|queja|\bfri[oa]\b|tardo mucho|tardaron|nunca llego|no llego|\bmal\b|horrible|cobraron de mas|equivocad/.test(t)) return derivar('Reclamo', 'Perdón por el problema. Esto lo tiene que ver una persona: ya le pasé tu mensaje al equipo y te responden en unos minutos.');
+    if (/persona|humano|alguien|operador|hablar con|atencion/.test(t) || texto.indexOf('🙋') >= 0) return derivar('Pidió hablar con una persona');
+
+    if (c.paso === 'estado') {
+      var n = (t.match(/\d{3,5}/) || [])[0];
+      c.paso = 'inicio';
+      if (n) {
+        var p = db.pedidos.find(function (x) { return x.n === +n; });
+        if (p) return menu('El pedido *#' + p.n + '* está: *' + p.estado + '*.\n' + ({ 'Recibido': 'Ya lo tenemos y entra al horno enseguida.', 'En el horno': 'Sale en unos 15 minutos.', 'En camino': 'El repartidor ya salió, llega en 10 a 20 minutos.', 'Entregado': '¡Que lo disfrutes!' })[p.estado] + '\n\n¿Algo más?');
+        return menu('No encuentro el pedido #' + n + '. Revisá el número en el mensaje de confirmación. ¿Te ayudo con otra cosa?');
+      }
+    }
+    if (c.paso === 'direccion') {
+      var zona = ZONAS.find(function (z) { return t.indexOf(z) >= 0; });
+      if (!zona) {
+        c.fallos++;
+        if (c.fallos >= 2) return derivar('No pudo confirmar la zona de envío');
+        return bot('No reconozco el barrio. Llegamos a ' + ZONAS.map(cap).join(', ') + '. Escribime la dirección con el barrio, por ejemplo "Gurruchaga 1200, Palermo", o elegí retirar.', ['🏃 Retiro en el local']);
+      }
+      c.fallos = 0; c.entrega = 'Envío a ' + cap(zona) + ' (' + texto.trim().slice(0, 60) + ')'; c.paso = 'pago';
+      return bot('Perfecto, llegamos a ' + cap(zona) + '. ¿Cómo pagás?', ['Efectivo', 'Transferencia', 'Mercado Pago']);
+    }
+
+    var items = leerPedido(texto);
+    if (items.length) {
+      sumar(c, items);
+      c.paso = 'carrito'; c.fallos = 0;
+      return bot('Anoté: *' + resumenCarrito(c) + '* (' + peso.format(subtotal(c)) + ').\n¿Querés sumar algo más?', ['✅ Listo, es todo', '➕ Sumar algo', '🗑️ Empezar de nuevo']);
+    }
+    if (c.paso === 'carrito') {
+      if (/listo|es todo|nada mas|eso es todo|no gracias|^no$/.test(t) || texto.indexOf('✅') >= 0) { c.paso = 'entrega'; return bot('¿Te lo mandamos o lo retirás?', ['🛵 Envío a domicilio', '🏃 Retiro en el local']); }
+      if (texto.indexOf('🗑') >= 0 || /empezar de nuevo|borrar|cancelar/.test(t)) { c.carrito = []; c.paso = 'inicio'; return menu('Listo, borré el pedido. ¿Qué hacemos?'); }
+      if (texto.indexOf('➕') >= 0 || /sumar|agregar|algo mas/.test(t)) return bot('Escribime qué y cuánto, por ejemplo "una fainá" o "media docena de empanadas".');
+    }
+    if (c.paso === 'entrega') {
+      if (/envio|domicilio|mandar|manden|delivery/.test(t) || texto.indexOf('🛵') >= 0) { c.paso = 'direccion'; c.fallos = 0; return bot('¿A qué dirección? Incluí el barrio.'); }
+      if (/retir|buscar|paso/.test(t)) { c.entrega = 'Retira en el local'; c.paso = 'pago'; return bot('Dale, lo retirás en Thames 1500. ¿Cómo pagás?', ['Efectivo', 'Transferencia', 'Mercado Pago']); }
+    }
+    if (c.paso === 'direccion' && /retir/.test(t)) { c.entrega = 'Retira en el local'; c.paso = 'pago'; return bot('Dale, lo retirás en Thames 1500. ¿Cómo pagás?', ['Efectivo', 'Transferencia', 'Mercado Pago']); }
+    if (c.paso === 'pago') {
+      var pago = /efectivo/.test(t) ? 'Efectivo' : /transfer/.test(t) ? 'Transferencia' : /mercado|mp/.test(t) ? 'Mercado Pago' : null;
+      if (pago) {
+        c.pago = pago; c.paso = 'confirmar';
+        var envio = c.entrega.indexOf('Envío') === 0 ? ENVIO : 0;
+        return bot('*Tu pedido*\n' + c.carrito.map(function (it) { return '• ' + nombreCant(it) + ': ' + peso.format(it.cant * plato(it.id).precio); }).join('\n') + (envio ? '\n• Envío: ' + peso.format(envio) : '') + '\n*Total: ' + peso.format(subtotal(c) + envio) + '*\n' + c.entrega + ' · ' + pago + '\n\n¿Lo confirmo?', ['✅ Confirmar pedido', '✏️ Cambiar algo']);
+      }
+    }
+    if (c.paso === 'confirmar') {
+      if (texto.indexOf('✅') >= 0 || /confirm|^si$|dale|ok/.test(t)) {
+        var envio2 = c.entrega.indexOf('Envío') === 0 ? ENVIO : 0, nro = db.siguiente++;
+        db.pedidos.unshift({ n: nro, conv: 'yo', cliente: 'Vos (cliente de prueba)', items: c.carrito.slice(), entrega: c.entrega, pago: c.pago, total: subtotal(c) + envio2, estado: 'Recibido', t: Date.now() });
+        c.carrito = []; c.paso = 'inicio'; c.motivo = 'Pedido #' + nro; c.resultado = 'pedido';
+        bot('¡Listo! Tu pedido es el *#' + nro + '*. ' + (envio2 ? 'Llega en 40 a 50 minutos.' : 'Lo podés retirar en 25 minutos.') + (c.pago === 'Transferencia' ? '\nAlias para transferir: *napo.pizzeria*' : c.pago === 'Mercado Pago' ? '\nTe mandamos el link de pago en un momento.' : '') + '\n\nPara saber cómo viene, escribime "estado".');
+        guardar(); pintarPanel(); return;
+      }
+      if (texto.indexOf('✏') >= 0 || /cambiar/.test(t)) { c.paso = 'carrito'; return bot('Decime qué querés sumar, o tocá "Empezar de nuevo".', ['✅ Listo, es todo', '🗑️ Empezar de nuevo']); }
+    }
+
+    if (/^(hola|buenas|buen dia|buenas tardes|buenas noches|holi)/.test(t)) { c.fallos = 0; return menu('¡Hola! Soy el asistente de *Pizzería Napo* 🍕'); }
+    if (/gracias|genial|perfecto|joya/.test(t)) return bot('¡Gracias a vos! Cualquier cosa, escribime.');
+    if (/carta|menu|precio|cuanto sale|cuanto esta|que tienen|sabores/.test(t) || texto.indexOf('📋') >= 0) { c.fallos = 0; c.resultado = c.resultado || 'resuelta'; c.motivo = c.motivo || 'Carta'; return bot(textoCarta() + '\n\nPara pedir, escribime qué querés, por ejemplo "2 muzzas y una fainá".'); }
+    if (/pedir|pedido|quiero|encargar/.test(t) && !/estado|donde/.test(t) || texto.indexOf('🍕') >= 0) { c.fallos = 0; c.paso = 'carrito'; return bot('¡Dale! Escribime qué querés y cuánto, por ejemplo "2 muzzas y media docena de empanadas".\n\n' + textoCarta()); }
+    if (/estado|donde esta|cuanto falta|demora|llega|viene/.test(t) || texto.indexOf('🛵') >= 0) { c.fallos = 0; c.paso = 'estado'; var mio = db.pedidos.find(function (p) { return p.conv === 'yo'; }); return bot('Pasame el número de pedido.' + (mio ? ' El tuyo es el #' + mio.n + '.' : ' Está en el mensaje de confirmación, por ejemplo #1041.')); }
+    if (/horario|abren|cierran|abierto|hora|zona|envio|delivery|llegan|direccion|donde estan/.test(t) || texto.indexOf('🕒') >= 0) { c.fallos = 0; c.resultado = c.resultado || 'resuelta'; c.motivo = c.motivo || 'Horarios'; return bot('Abrimos todos los días de 19 a 0 h, y viernes y sábados hasta la 1.\nEstamos en Thames 1500, Palermo.\nEnviamos a ' + ZONAS.map(cap).join(', ') + ' por ' + peso.format(ENVIO) + '.'); }
+
+    // No entendió: a la segunda, pasa a una persona en lugar de insistir.
+    c.fallos++;
+    if (c.fallos >= 2) return derivar('El bot no entendió dos veces', 'No te estoy entendiendo y no quiero hacerte perder tiempo. Te paso con una persona del equipo.');
+    menu('Perdón, no te entendí. Probá con una de estas opciones:');
+  }
+
+  // ---------- Panel del equipo ----------
+  var tab = 'convs';
+  function estadoConv(c) {
+    if (c.estado === 'esperando') return '<span class="st esperando">Esperando</span>';
+    if (c.estado === 'humano') return '<span class="st humano">' + OPERADORA + '</span>';
+    if (c.resultado === 'pedido' || c.estado === 'pedido') return '<span class="st pedido">Pedido</span>';
+    if (c.resultado === 'resuelta' || c.estado === 'resuelta') return '<span class="st resuelta">Resuelta</span>';
+    return '<span class="st bot">Bot</span>';
+  }
+  function pintarPanel() {
+    var cs = todas().filter(function (c) { return c.log.length; });
+    var porBot = cs.filter(function (c) { return c.estado !== 'esperando' && c.estado !== 'humano' && !c.derivada; }).length;
+    var derivadas = cs.filter(function (c) { return c.estado === 'esperando' || c.estado === 'humano' || c.derivada; }).length;
+    var hoyTotal = db.pedidos.reduce(function (a, p) { return a + p.total; }, 0);
+    $kpis.innerHTML = '<div class="kpi"><span>Conversaciones hoy</span><b>' + (cs.length + 37) + '</b><small>con las de ejemplo</small></div>' +
+      '<div class="kpi"><span>Resueltas por el bot</span><b>' + Math.round((porBot + 31) / (cs.length + 37) * 100) + '%</b><small>sin intervención del equipo</small></div>' +
+      '<div class="kpi"><span>Derivadas a una persona</span><b>' + (derivadas + 6) + '</b><small>' + cs.filter(function (c) { return c.estado === 'esperando'; }).length + ' esperando ahora</small></div>' +
+      '<div class="kpi"><span>Pedidos por WhatsApp</span><b>' + (db.pedidos.length + 11) + '</b><small>' + peso.format(hoyTotal + 11 * 21000) + ' hoy</small></div>';
+    document.querySelectorAll('[data-tab]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.tab === tab); });
+    var esperando = cs.filter(function (c) { return c.estado === 'esperando'; }).length;
+    document.querySelector('[data-tab=convs]').innerHTML = 'Conversaciones' + (esperando ? '<span class="n">' + esperando + '</span>' : '');
+    if (tab === 'pedidos') return pintarPedidos();
+    // Primero las que esperan a una persona, después las más nuevas.
+    cs.sort(function (a, b) { return (b.estado === 'esperando') - (a.estado === 'esperando') || b.t - a.t; });
+    $lista.innerHTML = cs.map(function (c) {
+      var ult = c.log.filter(function (m) { return m.de !== 's'; }).slice(-1)[0];
+      return '<button class="conv" type="button" data-conv="' + c.id + '" aria-current="' + (db.vista === c.id) + '"><span class="av" style="background:' + c.color + '">' + c.nombre[0] + '</span><span><b>' + esc(c.nombre) + '</b>' + estadoConv(c) + '</span><time>' + hora(c.t) + '</time><small>' + esc((ult.de === 'c' ? '' : ult.de === 'h' ? OPERADORA + ': ' : 'Bot: ') + ult.txt.replace(/\*/g, '')) + '</small></button>';
+    }).join('') || '<p class="hint">Escribile al bot desde el teléfono para empezar.</p>';
+    pintarDetalle();
+  }
+  function pintarDetalle() {
+    var c = conv(db.vista) || yo();
+    var h = '<div class="d-head"><b>' + esc(c.nombre) + '</b>' + estadoConv(c) + (c.motivo ? '<span class="reason">' + esc(c.motivo) + '</span>' : '') + '<span class="sp"></span>';
+    if (c.estado === 'esperando') h += '<button class="btn" type="button" data-tomar="' + c.id + '">Tomar conversación</button>';
+    if (c.estado === 'humano') h += '<button class="btn ghost" type="button" data-devolver="' + c.id + '">Devolver al bot</button>';
+    h += '</div><div class="log" id="log">';
+    if (!c.log.length) h += '<p class="lm s">Todavía no hay mensajes. Escribí "hola" en el teléfono.</p>';
+    c.log.forEach(function (m) {
+      if (m.de === 's') { h += '<p class="lm s">' + esc(m.txt) + ' · ' + hora(m.t) + '</p>'; return; }
+      h += '<div class="lm ' + m.de + '"><small>' + (m.de === 'c' ? esc(c.nombre) : m.de === 'h' ? OPERADORA : 'Bot') + ' · ' + hora(m.t) + '</small>' + negrita(m.txt) + '</div>';
+    });
+    h += '</div>';
+    if (c.estado === 'humano') {
+      h += '<div><form class="reply" data-responder="' + c.id + '"><input name="r" autocomplete="off" placeholder="Responder como ' + OPERADORA + '…" aria-label="Respuesta"><button class="btn">Enviar</button></form>';
+      h += '<div class="quick">' + ['Ya lo estoy revisando, dame un minuto.', 'Te mandamos otro sin cargo, sale en 15 minutos.', 'Te devolvemos el envío en el próximo pedido.'].map(function (q) { return '<button type="button" data-rapida="' + esc(q) + '">' + esc(q) + '</button>'; }).join('') + '</div></div>';
+    } else if (c.estado === 'esperando') {
+      h += '<p class="hint">El bot dejó de responder en esta conversación. Tomala para contestarle al cliente.</p>';
+    } else {
+      h += '<p class="hint">' + (c.id === 'yo' ? 'Esta es tu conversación con el bot. Probá pedir algo, preguntar el estado o decir que querés hablar con alguien.' : 'El bot resolvió esta conversación solo.') + '</p>';
+    }
+    $detalle.innerHTML = h;
+    var log = document.getElementById('log'); log.scrollTop = log.scrollHeight;
+  }
+  function pintarPedidos() {
+    $lista.innerHTML = '<div class="orders">' + db.pedidos.map(function (p) {
+      return '<div class="order"><div class="row"><b>#' + p.n + '</b><span>' + peso.format(p.total) + '</span></div><small>' + esc(p.cliente) + ' · ' + hora(p.t) + '</small><small>' + p.items.map(nombreCant).join(', ') + '</small><small>' + esc(p.entrega) + ' · ' + p.pago + '</small><div class="row" style="margin-top:6px"><label style="font-size:.78rem;color:var(--muted)">Estado</label><select data-estado-pedido="' + p.n + '">' + ['Recibido', 'En el horno', 'En camino', 'Entregado'].map(function (e) { return '<option' + (e === p.estado ? ' selected' : '') + '>' + e + '</option>'; }).join('') + '</select></div></div>';
+    }).join('') + '</div>';
+    pintarDetalle();
+  }
+
+  function responderComo(id, txt) {
+    txt = txt.trim(); if (!txt) return;
+    var c = conv(id);
+    if (c.id === 'yo') registrar('h', txt);
+    else { c.log.push({ de: 'h', txt: txt, t: Date.now() }); c.t = Date.now(); guardar(); pintarPanel(); }
+  }
+
+  // ---------- Eventos ----------
+  document.getElementById('compose').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var i = document.getElementById('msg'), txt = i.value.trim(); if (!txt) return;
+    i.value = ''; db.vista = 'yo';
+    registrar('c', txt); entender(txt);
+  });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var d = b.dataset;
+    if (d.op && !b.disabled) { db.vista = 'yo'; registrar('c', d.op); entender(d.op); }
+    if (d.conv) { db.vista = d.conv; guardar(); pintarPanel(); }
+    if (d.tab) { tab = d.tab; pintarPanel(); }
+    if (d.tomar) {
+      var c = conv(d.tomar); c.estado = 'humano'; c.derivada = true;
+      if (c.id === 'yo') sistema(OPERADORA + ' se sumó a la conversación');
+      else c.log.push({ de: 's', txt: OPERADORA + ' se sumó a la conversación', t: Date.now() });
+      guardar(); pintarPanel();
+      setTimeout(function () { var r = document.querySelector('form.reply input'); if (r) r.focus(); }, 50);
+    }
+    if (d.devolver) {
+      var c2 = conv(d.devolver); c2.estado = 'bot'; c2.resultado = 'resuelta'; c2.fallos = 0;
+      if (c2.id === 'yo') { sistema('El equipo devolvió la conversación al bot'); menu('¿Te ayudo con algo más?'); }
+      else { c2.log.push({ de: 's', txt: 'Conversación cerrada por ' + OPERADORA, t: Date.now() }); guardar(); pintarPanel(); }
+    }
+    if (d.rapida) { var f = b.closest('.detail').querySelector('form.reply'); responderComo(f.dataset.responder, d.rapida); }
+    if ('reiniciar' in d) { db = ejemplo(); guardar(); pintarChat(); pintarPanel(); setTimeout(function () { menu('¡Hola! Soy el asistente de *Pizzería Napo* 🍕'); }, 300); }
+  });
+  document.addEventListener('submit', function (e) {
+    if (!e.target.dataset.responder) return;
+    e.preventDefault(); responderComo(e.target.dataset.responder, e.target.r.value); e.target.r.value = '';
+    var r = document.querySelector('form.reply input'); if (r) r.focus();
+  });
+  document.addEventListener('change', function (e) {
+    var n = e.target.dataset.estadoPedido; if (!n) return;
+    var p = db.pedidos.find(function (x) { return x.n === +n; }); p.estado = e.target.value; guardar();
+    // El cliente se entera solo cuando su pedido cambia de estado.
+    if (p.conv === 'yo') bot('Novedades de tu pedido *#' + p.n + '*: ' + p.estado.toLowerCase() + '.' + (p.estado === 'En camino' ? ' 🛵' : p.estado === 'Entregado' ? ' ¡Que lo disfrutes!' : ''));
+  });
+
+  cargar(); pintarChat(); pintarPanel();
+  if (!yo().log.length) menu('¡Hola! Soy el asistente de *Pizzería Napo* 🍕');
+  // Para las capturas: ?m=texto&m=texto escribe esos mensajes al abrir.
+  var msgs = new URLSearchParams(location.search).getAll('m');
+  msgs.forEach(function (m) { cola = cola.then(function () { registrar('c', m); entender(m); }); });
+})();
+</script>
+</body>
+</html>
