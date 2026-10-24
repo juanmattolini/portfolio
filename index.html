@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Juan Mattolini, motion</title>
-<meta name="description" content="Videos cortos y animados que muestran cómo funciona un producto. Reels verticales para apps, tiendas y vendedores de Mercado Libre.">
-<meta property="og:title" content="Juan Mattolini, motion">
-<meta property="og:description" content="Videos cortos que muestran cómo funciona tu producto.">
+<title>Juan Mattolini, apps</title>
+<meta name="description" content="Diseño y desarrollo de apps completas: pantallas, base de datos, cuentas de usuario, integraciones con Mercado Libre e IA, publicación y videos de lanzamiento.">
+<meta property="og:title" content="Juan Mattolini, desarrollo de apps">
+<meta property="og:description" content="Apps completas, de la idea a la app publicada. Caso: App Casa.">
 <meta property="og:image" content="posters/asistente.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +43,8 @@
   .top strong { font: 700 1.125rem/1 var(--display); letter-spacing: -0.01em; }
   .top a { color: var(--muted); text-decoration: none; font-weight: 500; }
   .top-nav { display: flex; gap: 20px; }
+  .top strong, .top-nav a { white-space: nowrap; }
+  @media (max-width: 520px) { .top-nav a:not(:last-child) { display: none; } }
   .top a:hover { color: var(--ink); }
 
   /* Portada */
@@ -157,7 +159,7 @@
   .tree-wrap { background: var(--ink); color: #DCE3DE; border-radius: 16px; overflow-x: auto; }
   .tree { margin: 0; padding: clamp(18px, 3vw, 28px); font-size: 0.875rem; line-height: 1.6; }
   .case-foot { color: var(--muted); margin: 16px 0 0; }
-  .case + .offer { border-top: 0; }
+  .case + .work { padding-top: clamp(64px, 9vw, 120px); }
 
   /* Qué hago */
   .offer {
@@ -170,6 +172,21 @@
   .offer li:first-child { padding-top: 0; }
   .offer li b { display: block; font: 650 1.25rem/1.25 var(--display); letter-spacing: -0.01em; margin-bottom: 4px; }
   .offer li span { color: var(--muted); }
+
+  .hero-links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 0; }
+  .offer-note { color: var(--muted); max-width: 32ch; margin: 16px 0 0; }
+  .steps { padding-bottom: clamp(64px, 9vw, 120px); }
+  .steps ol {
+    list-style: none; counter-reset: paso; margin: 28px 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px;
+  }
+  .steps li { counter-increment: paso; border-top: 2px solid var(--ink); padding-top: 14px; }
+  .steps li::before {
+    content: counter(paso); display: block;
+    font: 700 2rem/1 var(--display); font-stretch: 80%; margin-bottom: 10px;
+  }
+  .steps b { display: block; font: 650 1.125rem/1.25 var(--display); margin-bottom: 6px; }
+  .steps span { color: var(--muted); font-size: 0.9875rem; }
 
   /* Contacto */
   .contact { background: var(--ink); color: var(--surface); }
@@ -193,6 +210,7 @@
     }
     .reel { scroll-snap-align: start; }
     .case-intro { grid-template-columns: 1fr; }
+    .steps ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .arch { grid-template-columns: 1fr; gap: 0; }
     .arch-link { padding: 12px 0; }
     .arch-link span { writing-mode: horizontal-tb; transform: none; border-left: 0; border-top: 2px solid var(--ink); padding: 6px 0 0; }
@@ -203,6 +221,7 @@
     .shelf { grid-auto-columns: 64%; }
     .offer { grid-template-columns: 1fr; }
     .decisions { grid-template-columns: 1fr; }
+    .steps ol { grid-template-columns: 1fr; }
     .facts div { grid-template-columns: 1fr; gap: 2px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -215,61 +234,30 @@
 
 <header class="wrap top">
   <strong>Juan Mattolini</strong>
-  <nav class="top-nav"><a href="#app-casa">App Casa por dentro</a><a href="#contacto">Contacto</a></nav>
+  <nav class="top-nav"><a href="#app-casa">Caso App Casa</a><a href="#servicios">Servicios</a><a href="#contacto">Contacto</a></nav>
 </header>
 
 <main>
   <section class="wrap hero">
     <div>
-      <h1>Videos cortos que muestran cómo funciona tu producto.</h1>
-      <p>Animo pantallas, datos y textos para reels verticales. Sirven para presentar una app, una novedad o lo que vendés en Mercado Libre.</p>
-      <a class="btn" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20un%20video">Pedir un video</a>
+      <h1>Hago apps completas, de la idea a la app publicada.</h1>
+      <p>Diseño las pantallas, programo la app y su servidor, la conecto con Mercado Libre, IA o lo que tu negocio use, y la lanzo con sus propios videos.</p>
+      <p class="hero-links">
+        <a class="btn" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20una%20app">Contame tu idea</a>
+        <a class="link" href="#app-casa">Ver el caso App Casa</a>
+      </p>
     </div>
     <div class="phone">
-      <video src="videos/compras.mp4" poster="posters/compras.jpg" autoplay muted loop playsinline aria-label="Reel de compras de App Casa, sin sonido"></video>
+      <video src="videos/compras.mp4" poster="posters/compras.jpg" autoplay muted loop playsinline aria-label="Video de la lista de compras de App Casa, sin sonido"></video>
     </div>
-  </section>
-
-  <section class="wrap work" aria-labelledby="trabajos">
-    <div class="work-head">
-      <h2 id="trabajos">Trabajos</h2>
-      <p>Videos para App Casa, una app que organiza tareas, compras y gastos del hogar. Tocá uno para verlo con sonido, o mirá <a href="#app-casa">cómo está hecha la app</a>.</p>
-    </div>
-    <ul class="shelf">
-      <li class="reel">
-        <div class="frame" data-src="videos/compras.mp4"><button class="play" type="button" aria-label="Ver Lista de compras"><img src="posters/compras.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Lista de compras</h3>
-        <p><span class="len">0:15</span>, con música. De los papelitos sueltos a una lista ordenada.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/propiedad.mp4"><button class="play" type="button" aria-label="Ver Tu propiedad al día"><img src="posters/propiedad.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Tu propiedad al día</h3>
-        <p><span class="len">0:20</span>, con voz. Expensas, facturas y presupuestos en un solo lugar.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/asistente.mp4"><button class="play" type="button" aria-label="Ver Asistente de la casa"><img src="posters/asistente.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Asistente de la casa</h3>
-        <p><span class="len">0:46</span>, con música. Presenta una función nueva usando la pantalla real de la app.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/materiales-mercadolibre.mp4"><button class="play" type="button" aria-label="Ver Materiales en Mercado Libre"><img src="posters/materiales-mercadolibre.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Materiales en Mercado Libre</h3>
-        <p><span class="len">0:47</span>, con música. Cómo la app arma la lista de materiales con precios.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/ofertas-cercanos.mp4"><button class="play" type="button" aria-label="Ver Ofertas y comercios cerca"><img src="posters/ofertas-cercanos.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Ofertas y comercios cerca</h3>
-        <p><span class="len">0:35</span>, con música. Cupones y negocios del barrio dentro de la app.</p>
-      </li>
-    </ul>
   </section>
 
   <section class="case" id="app-casa" aria-labelledby="app-casa-titulo">
     <div class="wrap">
       <div class="case-intro">
         <div>
-          <h2 id="app-casa-titulo">App Casa por dentro</h2>
-          <p class="lead">App Casa es una app para el mantenimiento del hogar: anotás lo que hay que arreglar, qué materiales hacen falta, cuánto cuesta y quién lo hace. La diseñé y la programé yo; los videos de arriba muestran sus funciones.</p>
+          <h2 id="app-casa-titulo">Caso: App Casa</h2>
+          <p class="lead">App Casa es una app para el mantenimiento del hogar: anotás lo que hay que arreglar, qué materiales hacen falta, cuánto cuesta y quién lo hace. La hice de punta a punta: diseño, desarrollo, servidor, integraciones, publicación y videos de lanzamiento. Así trabajo cada proyecto.</p>
           <p class="links">
             <a class="btn" href="https://juanmattolini.github.io/app-casa/">Abrir la app</a>
             <a class="link" href="https://github.com/juanmattolini/app-casa">Ver el código en GitHub</a>
@@ -414,21 +402,72 @@
     </div>
   </section>
 
-  <section class="wrap offer" aria-labelledby="que-hago">
-    <h2 id="que-hago">Qué puedo hacer para vos</h2>
-    <ul>
-      <li><b>Video de producto</b><span>Mostrar cómo funciona tu app, servicio o producto en menos de un minuto.</span></li>
-      <li><b>Reels para tus publicaciones</b><span>Clips verticales para Mercado Libre, Instagram y TikTok, listos para subir.</span></li>
-      <li><b>Lanzamientos y novedades</b><span>Un video corto cada vez que sumás una función, una oferta o un producto.</span></li>
+  <section class="wrap work" aria-labelledby="trabajos">
+    <div class="work-head">
+      <h2 id="trabajos">Videos de lanzamiento</h2>
+      <p>Cada app sale con videos que muestran cómo se usa, listos para redes y para la tienda. Estos son los de App Casa. Tocá uno para verlo con sonido.</p>
+    </div>
+    <ul class="shelf">
+      <li class="reel">
+        <div class="frame" data-src="videos/compras.mp4"><button class="play" type="button" aria-label="Ver Lista de compras"><img src="posters/compras.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Lista de compras</h3>
+        <p><span class="len">0:15</span>, con música. De los papelitos sueltos a una lista ordenada.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/propiedad.mp4"><button class="play" type="button" aria-label="Ver Tu propiedad al día"><img src="posters/propiedad.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Tu propiedad al día</h3>
+        <p><span class="len">0:20</span>, con voz. Expensas, facturas y presupuestos en un solo lugar.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/asistente.mp4"><button class="play" type="button" aria-label="Ver Asistente de la casa"><img src="posters/asistente.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Asistente de la casa</h3>
+        <p><span class="len">0:46</span>, con música. Presenta una función nueva usando la pantalla real de la app.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/materiales-mercadolibre.mp4"><button class="play" type="button" aria-label="Ver Materiales en Mercado Libre"><img src="posters/materiales-mercadolibre.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Materiales en Mercado Libre</h3>
+        <p><span class="len">0:47</span>, con música. Cómo la app arma la lista de materiales con precios.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/ofertas-cercanos.mp4"><button class="play" type="button" aria-label="Ver Ofertas y comercios cerca"><img src="posters/ofertas-cercanos.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Ofertas y comercios cerca</h3>
+        <p><span class="len">0:35</span>, con música. Cupones y negocios del barrio dentro de la app.</p>
+      </li>
     </ul>
+  </section>
+
+  <section class="wrap offer" id="servicios" aria-labelledby="que-hago">
+    <div>
+      <h2 id="que-hago">Qué incluye una app</h2>
+      <p class="offer-note">Lo mismo que tiene App Casa, adaptado a tu negocio. Podés pedir todo o solo una parte.</p>
+    </div>
+    <ul>
+      <li><b>Diseño de pantallas</b><span>Un prototipo para probar en el celular antes de programar, con tu marca y tus textos.</span></li>
+      <li><b>La app</b><span>Funciona en celular y computadora, se instala como una app y sigue andando sin conexión.</span></li>
+      <li><b>Cuentas, datos y archivos</b><span>Inicio de sesión, base de datos en la nube, fotos y documentos, sincronización entre dispositivos y cada usuario viendo solo lo suyo.</span></li>
+      <li><b>Integraciones</b><span>Mercado Libre, asistentes con IA, mapas y comercios cercanos, calendario, cupones y analítica de visitas.</span></li>
+      <li><b>Publicación y mantenimiento</b><span>La app online con actualizaciones automáticas cada vez que hay un cambio, y soporte después del lanzamiento.</span></li>
+      <li><b>Videos de lanzamiento</b><span>Reels que muestran las funciones con las pantallas reales, para redes, la web o la tienda.</span></li>
+    </ul>
+  </section>
+
+  <section class="wrap steps" aria-labelledby="como-trabajo">
+    <h2 id="como-trabajo">Cómo trabajo</h2>
+    <ol>
+      <li><b>Charla</b><span>Me contás qué necesitás resolver y para quién. Te propongo qué funciones van primero.</span></li>
+      <li><b>Prototipo</b><span>Ves las pantallas en tu celular y las ajustamos antes de escribir código.</span></li>
+      <li><b>Desarrollo por etapas</b><span>Cada etapa termina con una versión que ya podés usar, como las fases de App Casa.</span></li>
+      <li><b>Lanzamiento</b><span>Publico la app y te entrego los videos para presentarla.</span></li>
+      <li><b>Después</b><span>Ajustes, funciones nuevas y seguimiento de cómo la usan.</span></li>
+    </ol>
   </section>
 </main>
 
 <section class="contact" id="contacto" aria-labelledby="contacto-titulo">
   <div class="wrap">
-    <p id="contacto-titulo">Contame qué vendés y armamos el primer video.</p>
-    <a class="mail" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20un%20video">mattolinijuansebastian@gmail.com</a>
-    <footer>Juan Sebastián Mattolini, motion graphics.</footer>
+    <p id="contacto-titulo">Contame tu idea y te digo cómo la armaría.</p>
+    <a class="mail" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20una%20app">mattolinijuansebastian@gmail.com</a>
+    <footer>Juan Sebastián Mattolini, desarrollo de apps y motion graphics.</footer>
   </div>
 </section>
 
