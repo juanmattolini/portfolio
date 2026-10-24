@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alterna, Juan Mattolini</title>
+<meta name="description" content="Caso de desarrollo: Alterna, reserva de puestos de oficina para el esquema híbrido 3+2, con Supabase, tiempo real y reservas automáticas.">
+<meta property="og:title" content="Alterna, caso de desarrollo">
+<meta property="og:image" content="posters/alterna.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="home" href="./">Juan Mattolini</a>
+  <nav class="top-nav"><a href="./#proyectos">Proyectos</a><a href="app-casa.html">App Casa</a><a href="#contacto">Contacto</a></nav>
+</header>
+
+<main>
+  <section class="case case-first" aria-labelledby="alterna-titulo">
+    <div class="wrap">
+      <div class="case-intro">
+        <div>
+          <h1 class="case-title" id="alterna-titulo">Alterna</h1>
+          <p class="lead">Una herramienta interna para oficinas con esquema híbrido de 3 días presenciales y 2 en casa. Cada persona reserva su puesto en un plano de la oficina, los equipos coordinan sus días y quien administra ve quién cumplió. Dentro de la app se llama YADcras Park.</p>
+          <p class="links">
+            <a class="btn" href="https://juanmattolini.github.io/Alterna/">Abrir la app</a>
+            <a class="link" href="https://github.com/juanmattolini/Alterna">Ver el código en GitHub</a>
+          </p>
+        </div>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>Web app instalable para computadora y celular</dd></div>
+          <div><dt>Interfaz</dt><dd>HTML, CSS y JavaScript sin frameworks ni paso de compilación</dd></div>
+          <div><dt>Servidor</dt><dd>Supabase: Postgres, cuentas y tiempo real</dd></div>
+          <div><dt>Automatización</dt><dd>Tareas programadas en la base con pg_cron</dd></div>
+          <div><dt>Accesibilidad</dt><dd>Revisada con WCAG 2.1 AA, modo claro y oscuro</dd></div>
+          <div><dt>Publicación</dt><dd>GitHub Pages: cada cambio en el código se publica solo</dd></div>
+        </dl>
+      </div>
+
+      <h2 class="case-h">Qué hace, sección por sección</h2>
+      <div class="features">
+        <article>
+          <h3>Reservar</h3>
+          <p>La semana con los puestos libres de cada día. Un toque reserva o libera, y un contador muestra cuántos días presenciales llevás.</p>
+          <p>Lo que reserva otra persona aparece al instante en todas las pantallas, sin recargar.</p>
+        </article>
+        <article>
+          <h3>Plano de la oficina</h3>
+          <p>Cada zona se dibuja como una sala con sus mesas reales, mesones y escritorios. Quien administra arma la distribución escribiendo las mesas, por ejemplo "8, 2, 2, 2".</p>
+        </article>
+        <article>
+          <h3>Equipos y días ancla</h3>
+          <p>Cada equipo tiene 3 días fijos en la oficina. Un optimizador los reparte para que el día más cargado use la menor cantidad de puestos posible.</p>
+          <p>Con un botón, cada persona reserva sus días de equipo, en el mismo puesto si está libre.</p>
+        </article>
+        <article>
+          <h3>Reserva recurrente</h3>
+          <p>Elegís hasta 3 días fijos y un puesto, y la app los reserva sola cada noche. Si liberás un día, no lo vuelve a reservar. Si tu puesto está ocupado, te da otro de la misma zona.</p>
+        </article>
+        <article>
+          <h3>Calendario del mes</h3>
+          <p>Vista mensual con los feriados y días no laborables de Argentina 2026 y 2027 ya cargados. Los días que todavía no se pueden reservar muestran cuándo se abren.</p>
+        </article>
+        <article>
+          <h3>Ocupación y cumplimiento</h3>
+          <p>Reservas por día frente a la capacidad. Quien administra ve quién cargó sus días cada semana, filtra por equipo y copia la lista de pendientes para avisarles.</p>
+        </article>
+        <article>
+          <h3>Administración de la oficina</h3>
+          <p>Zonas, puestos, puestos fuera de servicio, reglas de reserva, roles de las personas y cierres. Al cargar un cierre se cancelan las reservas de ese día.</p>
+        </article>
+      </div>
+
+      <h2 class="case-h">Cómo está armada</h2>
+      <div class="arch" role="img" aria-label="Diagrama: la app en el navegador habla con Supabase, que guarda los datos, valida las reglas, avisa los cambios en tiempo real y corre la reserva automática cada noche. GitHub Pages publica la app.">
+        <div class="arch-col">
+          <p class="arch-title">En el navegador</p>
+          <div class="node">App en HTML, CSS y JavaScript</div>
+          <div class="node">Plano, calendario y paneles</div>
+          <div class="node node-soft">Publicada en GitHub Pages</div>
+        </div>
+        <div class="arch-link"><span>lee y reserva</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Supabase</p>
+          <div class="node">Cuentas por email</div>
+          <div class="node">Postgres: oficina, zonas, equipos, personas, reservas, cierres y reservas recurrentes</div>
+          <div class="node">Reglas en la base: triggers y RLS</div>
+        </div>
+        <div class="arch-link"><span>avisa y automatiza</span></div>
+        <div class="arch-col">
+          <p class="arch-title">En segundo plano</p>
+          <div class="node">Tiempo real: cambios de reservas, zonas y cierres</div>
+          <div class="node">pg_cron: reserva recurrente todas las noches</div>
+          <div class="node node-soft">Feriados de Argentina precargados</div>
+        </div>
+      </div>
+
+      <h2 class="case-h">Decisiones de desarrollo</h2>
+      <div class="decisions">
+        <div>
+          <h3>Las reglas las cuida la base</h3>
+          <p>Reservar solo de lunes a viernes, nunca un día pasado, dentro del período abierto y nunca en un día cerrado: lo valida Postgres, no solo la pantalla. Así nadie puede saltearse las reglas desde afuera de la app.</p>
+        </div>
+        <div>
+          <h3>Sin reservas dobles</h3>
+          <p>Un puesto no se puede reservar dos veces el mismo día y una persona tiene un solo puesto por día. Lo garantizan restricciones únicas en la base, aunque dos personas toquen al mismo tiempo.</p>
+        </div>
+        <div>
+          <h3>Roles protegidos</h3>
+          <p>Todos ven la oficina, pero cada persona reserva solo a su nombre. Solo quienes administran cambian zonas, equipos y roles, o borran reservas ajenas. Nadie puede darse permisos de administrador a sí mismo.</p>
+        </div>
+        <div>
+          <h3>Automatización dentro de la base</h3>
+          <p>La reserva recurrente corre en Postgres con pg_cron todas las noches. No hace falta un servidor aparte ni que alguien tenga la app abierta. Recuerda los días que liberaste para no volver a reservarlos.</p>
+        </div>
+        <div>
+          <h3>El calendario real de Argentina</h3>
+          <p>Feriados y días no laborables 2026 y 2027 cargados como cierres. Si una semana tiene un feriado, la meta de días presenciales baja sola.</p>
+        </div>
+        <div>
+          <h3>Accesible de verdad</h3>
+          <p>Revisión completa con WCAG 2.1 AA: contraste en los dos modos, botones de 44 px, navegación con teclado en pestañas y ventanas, avisos para lectores de pantalla y puestos con nombre ("N-03, ocupado por Ana").</p>
+        </div>
+        <div>
+          <h3>Simple de mantener</h3>
+          <p>Sin frameworks ni compilación: tres archivos de código y la librería de Supabase copiada localmente. Cualquier cambio se publica con solo subirlo.</p>
+        </div>
+        <div>
+          <h3>Pensada para sumar a todo un equipo</h3>
+          <p>La primera persona que se registra queda como administradora. La configuración documenta cómo usar un servidor de correo propio para invitar a muchas personas de una vez.</p>
+        </div>
+      </div>
+
+      <h2 class="case-h">Estructura del código</h2>
+      <div class="tree-wrap">
+<pre class="tree"><code>Alterna/
+├─ index.html              pantallas y estilos (temas claro y oscuro)
+├─ app.js                  reservas, plano, calendario, optimizador y paneles
+├─ config.js               conexión pública con Supabase
+├─ icons.js                íconos (Lucide)
+├─ manifest.webmanifest    instalación como app
+├─ vendor/                 librería de Supabase
+├─ docs/revision-diseno.md revisión de tema, accesibilidad y textos
+└─ supabase/migrations/    6 migraciones SQL
+   ├─ init                 tablas, reglas de reserva, roles y RLS
+   ├─ recurring_and_closures  reservas recurrentes, cierres y pg_cron
+   ├─ feriados_argentina   feriados 2026 y 2027
+   ├─ zone_layout          mesas de cada zona
+   └─ horizon_days         anticipación en días corridos</code></pre>
+      </div>
+      <p class="case-foot">Unas 1.500 líneas de código, desarrolladas en octubre de 2026.</p>
+    </div>
+  </section>
+
+  <section class="wrap work solo" aria-labelledby="video-alterna">
+    <div class="solo-text">
+      <h2 id="video-alterna">Video de lanzamiento</h2>
+      <p>Un reel de 36 segundos para presentar la app al equipo: reservar en el calendario, elegir puesto en el plano, el esquema 3 + 2, el cumplimiento del equipo y el modo oscuro.</p>
+    </div>
+    <div class="reel">
+      <div class="frame" data-src="videos/alterna.mp4"><button class="play" type="button" aria-label="Ver el video de Alterna"><img src="posters/alterna.jpg" alt="" loading="lazy"><span></span></button></div>
+    </div>
+  </section>
+
+  <section class="wrap next" aria-label="Otro proyecto">
+    <a href="app-casa.html"><span>Otro proyecto</span><b>App Casa: mantenimiento del hogar</b></a>
+  </section>
+</main>
+
+<section class="contact" id="contacto" aria-labelledby="contacto-titulo">
+  <div class="wrap">
+    <p id="contacto-titulo">¿Tu equipo necesita una herramienta así? Contame qué querés ordenar.</p>
+    <a class="mail" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20una%20herramienta%20para%20mi%20equipo">mattolinijuansebastian@gmail.com</a>
+    <footer>Juan Sebastián Mattolini, desarrollo de apps y soluciones a medida.</footer>
+  </div>
+</section>
+
+<script>
+  // Al tocar el video se cambia la portada por el video con sonido.
+  document.querySelectorAll('.frame').forEach(function (frame) {
+    frame.querySelector('.play').addEventListener('click', function () {
+      var video = document.createElement('video');
+      video.src = frame.dataset.src;
+      video.poster = frame.querySelector('img').src;
+      video.controls = true;
+      video.playsInline = true;
+      frame.replaceChildren(video);
+      video.play();
+      video.focus();
+    });
+  });
+</script>
+</body>
+</html>

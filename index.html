@@ -4,450 +4,81 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Mattolini, apps</title>
-<meta name="description" content="Diseño y desarrollo de apps completas: pantallas, base de datos, cuentas de usuario, integraciones con Mercado Libre e IA, publicación y videos de lanzamiento.">
-<meta property="og:title" content="Juan Mattolini, desarrollo de apps">
-<meta property="og:description" content="Apps completas, de la idea a la app publicada. Caso: App Casa.">
+<meta name="description" content="Desarrollo de apps y soluciones a medida: apps para clientes, herramientas internas, integraciones, automatizaciones e IA. Proyectos: App Casa y Alterna.">
+<meta property="og:title" content="Juan Mattolini, desarrollo de apps y soluciones">
+<meta property="og:description" content="Apps y soluciones a medida, de la idea a la app publicada.">
 <meta property="og:image" content="posters/asistente.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #E6E9E7;
-    --surface: #FFFFFF;
-    --ink: #17201B;
-    --muted: #59635D;
-    --line: #C9CFCB;
-    --mark: #F2B21B;
-    --display: "Bricolage Grotesque", system-ui, sans-serif;
-    --body: "Instrument Sans", system-ui, sans-serif;
-    --gutter: clamp(16px, 4vw, 56px);
-  }
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font: 400 1.0625rem/1.55 var(--body);
-  }
-  a { color: inherit; }
-  :focus-visible { outline: 3px solid var(--mark); outline-offset: 3px; border-radius: 4px; }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 var(--gutter); }
-
-  /* Cabecera */
-  .top {
-    display: flex; justify-content: space-between; align-items: baseline;
-    padding-top: 24px; padding-bottom: 24px; gap: 16px;
-  }
-  .top strong { font: 700 1.125rem/1 var(--display); letter-spacing: -0.01em; }
-  .top a { color: var(--muted); text-decoration: none; font-weight: 500; }
-  .top-nav { display: flex; gap: 20px; }
-  .top strong, .top-nav a { white-space: nowrap; }
-  @media (max-width: 520px) { .top-nav a:not(:last-child) { display: none; } }
-  .top a:hover { color: var(--ink); }
-
-  /* Portada */
-  .hero {
-    display: grid; grid-template-columns: 1fr auto; align-items: center;
-    gap: clamp(32px, 6vw, 96px);
-    padding-top: clamp(24px, 6vw, 72px); padding-bottom: clamp(56px, 9vw, 120px);
-  }
-  .hero h1 {
-    font-family: var(--display);
-    font-weight: 750; font-stretch: 78%;
-    font-size: clamp(2.75rem, 7.4vw, 6.25rem);
-    line-height: 0.94; letter-spacing: -0.035em;
-    margin: 0 0 28px; max-width: 11ch;
-    text-wrap: balance;
-  }
-  .hero p { margin: 0 0 32px; max-width: 34ch; color: var(--muted); font-size: 1.1875rem; }
-  .btn {
-    display: inline-block; text-decoration: none;
-    background: var(--ink); color: var(--surface);
-    font-weight: 600; padding: 14px 22px; border-radius: 999px;
-  }
-  .btn:hover { background: #2C3832; }
-  .phone {
-    width: clamp(220px, 26vw, 320px); aspect-ratio: 9 / 16;
-    border-radius: 30px; overflow: hidden; background: #1E7F55;
-    border: 8px solid var(--ink);
-    transform: rotate(3deg);
-    box-shadow: 0 30px 60px -30px rgba(23, 32, 27, 0.55);
-  }
-  .phone video { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  /* Trabajos */
-  .work { padding-bottom: clamp(64px, 9vw, 120px); }
-  .work-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
-  h2 {
-    font: 700 clamp(1.75rem, 3.4vw, 2.5rem)/1.05 var(--display);
-    font-stretch: 85%; letter-spacing: -0.02em; margin: 0;
-  }
-  .work-head p { margin: 0; color: var(--muted); max-width: 46ch; }
-  .shelf {
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px;
-    list-style: none; margin: 0; padding: 0;
-  }
-  .reel { display: flex; flex-direction: column; }
-  .frame {
-    position: relative; aspect-ratio: 9 / 16; border-radius: 14px; overflow: hidden;
-    background: #1E7F55;
-  }
-  .frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .play {
-    position: absolute; inset: 0; width: 100%; border: 0; padding: 0; cursor: pointer;
-    background: transparent;
-  }
-  .play img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .play span {
-    position: absolute; left: 12px; bottom: 12px;
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--surface); display: grid; place-items: center;
-    box-shadow: 0 6px 16px -6px rgba(0,0,0,0.5);
-  }
-  .play span::before {
-    content: ""; margin-left: 4px;
-    border-style: solid; border-width: 9px 0 9px 15px;
-    border-color: transparent transparent transparent var(--ink);
-  }
-  .play:hover span { transform: scale(1.06); }
-  .reel h3 { font: 650 1.125rem/1.2 var(--display); margin: 14px 0 4px; letter-spacing: -0.01em; }
-  .reel p { margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.45; }
-  .reel .len { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
-
-  /* App Casa por dentro */
-  .case { background: var(--surface); padding: clamp(64px, 9vw, 120px) 0; }
-  .case-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
-  .case .lead { font-size: 1.1875rem; color: var(--muted); max-width: 46ch; margin: 18px 0 28px; }
-  .links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 0; }
-  .link { font-weight: 600; text-underline-offset: 4px; text-decoration-thickness: 2px; text-decoration-color: var(--mark); }
-  .facts { margin: 0; border-top: 2px solid var(--ink); }
-  .facts div { display: grid; grid-template-columns: 10.5rem 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-  .facts dt { font-weight: 600; }
-  .facts dd { margin: 0; color: var(--muted); }
-  .case-h {
-    font: 700 clamp(1.375rem, 2.4vw, 1.75rem)/1.1 var(--display); font-stretch: 85%;
-    letter-spacing: -0.015em; margin: clamp(56px, 8vw, 96px) 0 24px;
-  }
-  .case h4 { font: 650 1.125rem/1.25 var(--display); letter-spacing: -0.01em; margin: 0 0 8px; }
-  .case p { line-height: 1.55; }
-  .features { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px 40px; }
-  .features article { border-top: 1px solid var(--line); padding-top: 18px; }
-  .features p { margin: 0 0 10px; color: var(--muted); font-size: 0.9875rem; }
-  .arch {
-    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 0;
-    background: var(--bg); border-radius: 20px; padding: clamp(16px, 3vw, 32px);
-  }
-  .arch-col { display: flex; flex-direction: column; gap: 10px; }
-  .arch-title { font: 700 1rem/1.2 var(--display); margin: 0 0 4px; }
-  .node {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
-    padding: 10px 12px; font-size: 0.9375rem; line-height: 1.4;
-  }
-  .node-soft { background: transparent; border-style: dashed; color: var(--muted); }
-  .node code, .tree { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
-  .node code { font-size: 0.875em; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
-  .arch-link { display: grid; place-items: center; padding: 0 14px; }
-  .arch-link span {
-    font-size: 0.8125rem; color: var(--muted); white-space: nowrap;
-    writing-mode: vertical-rl; transform: rotate(180deg);
-    border-left: 2px solid var(--ink); padding-left: 6px;
-  }
-  .decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 56px; }
-  .decisions p { margin: 0; color: var(--muted); max-width: 60ch; }
-  .tree-wrap { background: var(--ink); color: #DCE3DE; border-radius: 16px; overflow-x: auto; }
-  .tree { margin: 0; padding: clamp(18px, 3vw, 28px); font-size: 0.875rem; line-height: 1.6; }
-  .case-foot { color: var(--muted); margin: 16px 0 0; }
-  .case + .work { padding-top: clamp(64px, 9vw, 120px); }
-
-  /* Qué hago */
-  .offer {
-    border-top: 1px solid var(--line);
-    display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(24px, 6vw, 96px);
-    padding-top: clamp(48px, 7vw, 88px); padding-bottom: clamp(64px, 9vw, 120px);
-  }
-  .offer ul { list-style: none; margin: 0; padding: 0; }
-  .offer li { padding: 18px 0; border-bottom: 1px solid var(--line); }
-  .offer li:first-child { padding-top: 0; }
-  .offer li b { display: block; font: 650 1.25rem/1.25 var(--display); letter-spacing: -0.01em; margin-bottom: 4px; }
-  .offer li span { color: var(--muted); }
-
-  .hero-links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 0; }
-  .offer-note { color: var(--muted); max-width: 32ch; margin: 16px 0 0; }
-  .steps { padding-bottom: clamp(64px, 9vw, 120px); }
-  .steps ol {
-    list-style: none; counter-reset: paso; margin: 28px 0 0; padding: 0;
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px;
-  }
-  .steps li { counter-increment: paso; border-top: 2px solid var(--ink); padding-top: 14px; }
-  .steps li::before {
-    content: counter(paso); display: block;
-    font: 700 2rem/1 var(--display); font-stretch: 80%; margin-bottom: 10px;
-  }
-  .steps b { display: block; font: 650 1.125rem/1.25 var(--display); margin-bottom: 6px; }
-  .steps span { color: var(--muted); font-size: 0.9875rem; }
-
-  /* Contacto */
-  .contact { background: var(--ink); color: var(--surface); }
-  .contact .wrap { padding-top: clamp(64px, 9vw, 120px); padding-bottom: 40px; }
-  .contact p { margin: 0 0 16px; color: #B9C3BD; font-size: 1.1875rem; }
-  .contact a.mail {
-    display: inline-block; text-decoration: none;
-    font: 700 clamp(1.5rem, 5.2vw, 4.25rem)/1.05 var(--display);
-    font-stretch: 80%; letter-spacing: -0.03em;
-    border-bottom: 4px solid var(--mark); padding-bottom: 6px;
-    overflow-wrap: anywhere;
-  }
-  .contact a.mail:hover { color: var(--mark); }
-  .contact footer { margin-top: clamp(64px, 9vw, 112px); color: #8A958F; font-size: 0.875rem; }
-
-  @media (max-width: 1000px) {
-    .shelf {
-      grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 46%;
-      overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px;
-      margin-right: calc(var(--gutter) * -1); padding-right: var(--gutter);
-    }
-    .reel { scroll-snap-align: start; }
-    .case-intro { grid-template-columns: 1fr; }
-    .steps ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .arch { grid-template-columns: 1fr; gap: 0; }
-    .arch-link { padding: 12px 0; }
-    .arch-link span { writing-mode: horizontal-tb; transform: none; border-left: 0; border-top: 2px solid var(--ink); padding: 6px 0 0; }
-  }
-  @media (max-width: 720px) {
-    .hero { grid-template-columns: 1fr; }
-    .phone { justify-self: center; transform: rotate(2deg); width: min(68vw, 280px); }
-    .shelf { grid-auto-columns: 64%; }
-    .offer { grid-template-columns: 1fr; }
-    .decisions { grid-template-columns: 1fr; }
-    .steps ol { grid-template-columns: 1fr; }
-    .facts div { grid-template-columns: 1fr; gap: 2px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .phone { transform: none; }
-    .play:hover span { transform: none; }
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header class="wrap top">
-  <strong>Juan Mattolini</strong>
-  <nav class="top-nav"><a href="#app-casa">Caso App Casa</a><a href="#servicios">Servicios</a><a href="#contacto">Contacto</a></nav>
+  <a class="home" href="./">Juan Mattolini</a>
+  <nav class="top-nav"><a href="#proyectos">Proyectos</a><a href="#servicios">Servicios</a><a href="#contacto">Contacto</a></nav>
 </header>
 
 <main>
   <section class="wrap hero">
     <div>
-      <h1>Hago apps completas, de la idea a la app publicada.</h1>
-      <p>Diseño las pantallas, programo la app y su servidor, la conecto con Mercado Libre, IA o lo que tu negocio use, y la lanzo con sus propios videos.</p>
+      <h1>Apps y soluciones a medida para tu negocio.</h1>
+      <p>Si algo en tu negocio se maneja con planillas, mensajes y papelitos, lo convierto en una app: para tus clientes o para tu equipo. La diseño, la programo, la publico y la acompaño hasta que funciona.</p>
       <p class="hero-links">
         <a class="btn" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20una%20app">Contame tu idea</a>
-        <a class="link" href="#app-casa">Ver el caso App Casa</a>
+        <a class="link" href="#proyectos">Ver proyectos</a>
       </p>
     </div>
-    <div class="phone">
-      <video src="videos/compras.mp4" poster="posters/compras.jpg" autoplay muted loop playsinline aria-label="Video de la lista de compras de App Casa, sin sonido"></video>
+    <div class="phones" aria-hidden="true">
+      <div class="phone phone-back"><video src="videos/alterna.mp4" poster="posters/alterna.jpg" autoplay muted loop playsinline></video></div>
+      <div class="phone phone-front"><video src="videos/compras.mp4" poster="posters/compras.jpg" autoplay muted loop playsinline></video></div>
     </div>
   </section>
 
-  <section class="case" id="app-casa" aria-labelledby="app-casa-titulo">
+  <section class="projects" id="proyectos" aria-labelledby="proyectos-titulo">
     <div class="wrap">
-      <div class="case-intro">
-        <div>
-          <h2 id="app-casa-titulo">Caso: App Casa</h2>
-          <p class="lead">App Casa es una app para el mantenimiento del hogar: anotás lo que hay que arreglar, qué materiales hacen falta, cuánto cuesta y quién lo hace. La hice de punta a punta: diseño, desarrollo, servidor, integraciones, publicación y videos de lanzamiento. Así trabajo cada proyecto.</p>
-          <p class="links">
-            <a class="btn" href="https://juanmattolini.github.io/app-casa/">Abrir la app</a>
-            <a class="link" href="https://github.com/juanmattolini/app-casa">Ver el código en GitHub</a>
-          </p>
-        </div>
-        <dl class="facts">
-          <div><dt>Tipo</dt><dd>Web app instalable (PWA) que funciona sin conexión</dd></div>
-          <div><dt>Interfaz</dt><dd>React 18 y Vite 5</dd></div>
-          <div><dt>Datos en el teléfono</dt><dd>IndexedDB con Dexie</dd></div>
-          <div><dt>Nube</dt><dd>Supabase: cuentas, base Postgres, archivos y funciones en el servidor</dd></div>
-          <div><dt>Servicios</dt><dd>Mercado Libre, Claude (Anthropic), OpenStreetMap, Google Calendar</dd></div>
-          <div><dt>Publicación</dt><dd>GitHub Actions compila y publica en GitHub Pages en cada cambio</dd></div>
-        </dl>
+      <div class="work-head">
+        <h2 id="proyectos-titulo">Proyectos</h2>
+        <p>Dos apps publicadas, hechas de punta a punta. Entrá a cada una para ver qué hace, cómo está armada y por qué la hice así.</p>
       </div>
-
-      <h3 class="case-h">Qué hace, sección por sección</h3>
-      <div class="features">
-        <article>
-          <h4>Tareas</h4>
-          <p>Lista agrupada en Vencidas, Hoy, Próximas y Sin fecha, con filtro por habitación y buscador. Cada tarea tiene prioridad, fotos, notas, materiales con casillas y quién la hace (yo o un profesional).</p>
-          <p>Las tareas pueden repetirse: al marcarla hecha se crea la siguiente con los mismos materiales. El recordatorio va al calendario del teléfono con un enlace de Google Calendar o un archivo .ics.</p>
-        </article>
-        <article>
-          <h4>Presupuestos</h4>
-          <p>En cada tarea se cargan presupuestos con proveedor, precio, teléfono, notas y una foto o PDF adjunto. La app marca el más barato y el elegido, y ese precio pasa a Gastos.</p>
-        </article>
-        <article>
-          <h4>Casa</h4>
-          <p>Los aparatos de la casa con su manual, factura y garantía, y los contactos de plomeros, electricistas, gasistas y otros oficios. Cada uno guarda el historial de trabajos y lo que se pagó.</p>
-        </article>
-        <article>
-          <h4>Compras y Mercado Libre</h4>
-          <p>Junta los materiales pendientes de todas las tareas en una sola lista para compartir. Cada material tiene un botón para ver opciones en Mercado Libre con enlace de afiliado, siempre señalado como tal.</p>
-        </article>
-        <article>
-          <h4>Ofertas y comercios cerca</h4>
-          <p>Ofertas de ferreterías, pinturerías y corralones marcadas como auspiciadas. Si una coincide con algo de tu lista de compras, sube primero. Cada usuario genera un cupón por oferta, que el comercio puede verificar.</p>
-          <p>También busca ferreterías cercanas en OpenStreetMap, con distancia y cómo llegar. La ubicación se usa solo para esa búsqueda y no se guarda.</p>
-        </article>
-        <article>
-          <h4>Gastos</h4>
-          <p>Lo gastado y lo que falta pagar, por mes y por habitación, según el presupuesto elegido de cada tarea. Suma el costo estimado de los materiales con precios de referencia.</p>
-        </article>
-        <article>
-          <h4>Asistente</h4>
-          <p>Un chat que responde dudas de la casa mirando tus tareas, materiales y aparatos, y propone una tarea nueva con su lista de materiales. No guarda nada solo: la tarea se abre para revisarla antes de guardarla.</p>
-          <p>Tiene dos modos: uno básico gratis, con guías armadas para arreglos comunes (siempre deriva el gas a un gasista), y otro con Claude, de Anthropic, que corre en el servidor.</p>
-        </article>
-        <article>
-          <h4>Ajustes y cuenta</h4>
-          <p>Cuenta con email (enlace mágico o contraseña) para sincronizar entre dispositivos, o uso sin cuenta en un solo teléfono. Habitaciones editables, moneda, tema claro u oscuro y copia de seguridad en un archivo.</p>
-        </article>
+      <div class="project-list">
+        <a class="project" href="app-casa.html">
+          <img src="posters/asistente.jpg" alt="" loading="lazy">
+          <div class="project-body">
+            <p class="project-kind">App para clientes</p>
+            <h3>App Casa</h3>
+            <p>Mantenimiento del hogar: tareas, materiales, presupuestos y gastos, con compras en Mercado Libre, ofertas de comercios cercanos y un asistente con IA.</p>
+            <ul class="tags"><li>React</li><li>Supabase</li><li>Funciona sin conexión</li><li>Mercado Libre</li><li>Claude</li><li>5 videos</li></ul>
+            <span class="more">Ver el proyecto</span>
+          </div>
+        </a>
+        <a class="project" href="alterna.html">
+          <img src="posters/alterna.jpg" alt="" loading="lazy">
+          <div class="project-body">
+            <p class="project-kind">Herramienta interna</p>
+            <h3>Alterna</h3>
+            <p>Reserva de puestos de oficina para el esquema híbrido de 3 días presenciales y 2 en casa: plano por zonas, equipos, reservas automáticas y control de cumplimiento.</p>
+            <ul class="tags"><li>JavaScript</li><li>Supabase</li><li>Tiempo real</li><li>Tareas programadas</li><li>Accesible</li><li>Video</li></ul>
+            <span class="more">Ver el proyecto</span>
+          </div>
+        </a>
       </div>
-
-      <h3 class="case-h">Cómo está armada</h3>
-      <div class="arch" role="img" aria-label="Diagrama: el teléfono guarda los datos y sincroniza con Supabase. Supabase tiene cuentas, la base de datos, los archivos y dos funciones de servidor que hablan con Claude y con Mercado Libre. El teléfono consulta OpenStreetMap directamente. GitHub Actions publica la app en GitHub Pages.">
-        <div class="arch-col">
-          <p class="arch-title">En el teléfono</p>
-          <div class="node">App React instalable</div>
-          <div class="node">IndexedDB (Dexie): tareas, materiales, fotos, presupuestos, aparatos, contactos</div>
-          <div class="node node-soft">OpenStreetMap: comercios cerca</div>
-        </div>
-        <div class="arch-link"><span>sincroniza</span></div>
-        <div class="arch-col">
-          <p class="arch-title">Supabase</p>
-          <div class="node">Cuentas por email</div>
-          <div class="node">Postgres: registros, ofertas, cupones, caché y uso del asistente</div>
-          <div class="node">Archivos privados: fotos y PDF</div>
-          <div class="node">Funciones del servidor: <code>asistente</code> y <code>ml-buscar</code></div>
-        </div>
-        <div class="arch-link"><span>llaman a</span></div>
-        <div class="arch-col">
-          <p class="arch-title">Servicios externos</p>
-          <div class="node">Claude (Anthropic)</div>
-          <div class="node">API de Mercado Libre</div>
-          <div class="node node-soft">GitHub Actions publica en GitHub Pages</div>
-        </div>
-      </div>
-
-      <h3 class="case-h">Decisiones de desarrollo</h3>
-      <div class="decisions">
-        <div>
-          <h4>Funciona sin conexión</h4>
-          <p>La app siempre lee del teléfono. Al sincronizar compara cada registro con lo último que envió, sube solo las diferencias y después baja lo que cambió en otros dispositivos. La hora la pone el servidor, así un teléfono con el reloj mal no desordena los cambios.</p>
-        </div>
-        <div>
-          <h4>Una tabla flexible en la nube</h4>
-          <p>Cada registro viaja como JSON en una sola tabla, así un campo nuevo en la app se sincroniza sin cambiar la base de datos. Los ids locales se traducen a identificadores únicos para que las relaciones entre tareas, materiales y habitaciones se mantengan entre dispositivos.</p>
-        </div>
-        <div>
-          <h4>Cada usuario ve solo lo suyo</h4>
-          <p>Seguridad a nivel de fila (RLS) en Postgres y en los archivos: cada consulta solo alcanza los datos de quien la hace. Las tablas internas, como la caché y el uso del asistente, no tienen acceso desde la app.</p>
-        </div>
-        <div>
-          <h4>Claves solo en el servidor</h4>
-          <p>Las credenciales de Mercado Libre y de Anthropic viven en funciones de Supabase, nunca en la app. Así no se pueden copiar desde el navegador.</p>
-        </div>
-        <div>
-          <h4>Costos bajo control</h4>
-          <p>El asistente con IA tiene un límite diario por usuario, contado de forma atómica para que dos consultas simultáneas no lo pasen, y registra los tokens usados por día. Las búsquedas en Mercado Libre se guardan 24 horas para no repetir consultas.</p>
-        </div>
-        <div>
-          <h4>Plan B ante límites externos</h4>
-          <p>Cuando la API de búsqueda de Mercado Libre empezó a responder con un bloqueo, la app pasó a abrir la búsqueda directamente con el enlace de afiliado. Cada integración se prende o se apaga al compilar, sin tocar el código.</p>
-        </div>
-        <div>
-          <h4>Privacidad</h4>
-          <p>La ubicación no se guarda. La analítica cuenta solo visitas, nunca tareas ni datos personales. La charla con el asistente queda en el teléfono. Las fotos se comprimen antes de guardarse.</p>
-        </div>
-        <div>
-          <h4>Transparencia con lo comercial</h4>
-          <p>Las ofertas dicen "Auspiciado" y los enlaces a Mercado Libre avisan que son de afiliado. Los cupones quedan registrados para medir cuántos se generan y cuántos se canjean.</p>
-        </div>
-      </div>
-
-      <h3 class="case-h">Estructura del código</h3>
-      <div class="tree-wrap">
-<pre class="tree"><code>app-casa/
-├─ src/
-│  ├─ App.jsx              pantallas de Tareas, Compras, Gastos y Ajustes
-│  ├─ Casa.jsx             aparatos y contactos
-│  ├─ Ofertas.jsx          ofertas auspiciadas y cupones
-│  ├─ Cercanos.jsx         comercios cerca (OpenStreetMap)
-│  ├─ MercadoLibre.jsx     botón de precios y costo estimado
-│  ├─ Asistente.jsx        chat
-│  ├─ Acceso.jsx, Nube.jsx inicio de sesión y estado de la sincronización
-│  ├─ db.js                base local (Dexie) y datos de ejemplo
-│  ├─ nube.js              sincronización con Supabase
-│  ├─ asistente-basico.js  asistente sin IA
-│  ├─ plantillas.js        guías de arreglos y sus materiales
-│  ├─ calendario.js        recordatorios (Google Calendar e .ics)
-│  ├─ respaldo.js          copia de seguridad en JSON
-│  └─ imagenes.js          compresión de fotos
-├─ supabase/
-│  ├─ functions/asistente  chat con Claude, con límite diario
-│  ├─ functions/ml-buscar  búsqueda en Mercado Libre con caché
-│  └─ migrations/          5 migraciones SQL con RLS
-├─ .github/workflows/      compilar y publicar en GitHub Pages
-└─ vite.config.js          PWA o un único HTML para vista previa</code></pre>
-      </div>
-      <p class="case-foot">Unas 5.500 líneas de código, desarrolladas en octubre de 2026.</p>
     </div>
-  </section>
-
-  <section class="wrap work" aria-labelledby="trabajos">
-    <div class="work-head">
-      <h2 id="trabajos">Videos de lanzamiento</h2>
-      <p>Cada app sale con videos que muestran cómo se usa, listos para redes y para la tienda. Estos son los de App Casa. Tocá uno para verlo con sonido.</p>
-    </div>
-    <ul class="shelf">
-      <li class="reel">
-        <div class="frame" data-src="videos/compras.mp4"><button class="play" type="button" aria-label="Ver Lista de compras"><img src="posters/compras.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Lista de compras</h3>
-        <p><span class="len">0:15</span>, con música. De los papelitos sueltos a una lista ordenada.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/propiedad.mp4"><button class="play" type="button" aria-label="Ver Tu propiedad al día"><img src="posters/propiedad.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Tu propiedad al día</h3>
-        <p><span class="len">0:20</span>, con voz. Expensas, facturas y presupuestos en un solo lugar.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/asistente.mp4"><button class="play" type="button" aria-label="Ver Asistente de la casa"><img src="posters/asistente.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Asistente de la casa</h3>
-        <p><span class="len">0:46</span>, con música. Presenta una función nueva usando la pantalla real de la app.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/materiales-mercadolibre.mp4"><button class="play" type="button" aria-label="Ver Materiales en Mercado Libre"><img src="posters/materiales-mercadolibre.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Materiales en Mercado Libre</h3>
-        <p><span class="len">0:47</span>, con música. Cómo la app arma la lista de materiales con precios.</p>
-      </li>
-      <li class="reel">
-        <div class="frame" data-src="videos/ofertas-cercanos.mp4"><button class="play" type="button" aria-label="Ver Ofertas y comercios cerca"><img src="posters/ofertas-cercanos.jpg" alt="" loading="lazy"><span></span></button></div>
-        <h3>Ofertas y comercios cerca</h3>
-        <p><span class="len">0:35</span>, con música. Cupones y negocios del barrio dentro de la app.</p>
-      </li>
-    </ul>
   </section>
 
   <section class="wrap offer" id="servicios" aria-labelledby="que-hago">
     <div>
-      <h2 id="que-hago">Qué incluye una app</h2>
-      <p class="offer-note">Lo mismo que tiene App Casa, adaptado a tu negocio. Podés pedir todo o solo una parte.</p>
+      <h2 id="que-hago">Qué puedo resolver</h2>
+      <p class="offer-note">Trabajo con React y JavaScript, Supabase (base de datos, cuentas, archivos, tiempo real y funciones en el servidor), GitHub para publicar, y APIs como Mercado Libre y Claude.</p>
     </div>
     <ul>
-      <li><b>Diseño de pantallas</b><span>Un prototipo para probar en el celular antes de programar, con tu marca y tus textos.</span></li>
-      <li><b>La app</b><span>Funciona en celular y computadora, se instala como una app y sigue andando sin conexión.</span></li>
-      <li><b>Cuentas, datos y archivos</b><span>Inicio de sesión, base de datos en la nube, fotos y documentos, sincronización entre dispositivos y cada usuario viendo solo lo suyo.</span></li>
-      <li><b>Integraciones</b><span>Mercado Libre, asistentes con IA, mapas y comercios cercanos, calendario, cupones y analítica de visitas.</span></li>
-      <li><b>Publicación y mantenimiento</b><span>La app online con actualizaciones automáticas cada vez que hay un cambio, y soporte después del lanzamiento.</span></li>
-      <li><b>Videos de lanzamiento</b><span>Reels que muestran las funciones con las pantallas reales, para redes, la web o la tienda.</span></li>
+      <li><b>Apps para tus clientes</b><span>Una app propia para que tus clientes reserven, compren, consulten o sigan un pedido, en el celular y en la computadora.</span></li>
+      <li><b>Herramientas para tu equipo</b><span>Reservas, turnos, tareas, stock o seguimiento de trabajos: lo que hoy está en planillas, en un solo lugar y con reglas claras.</span></li>
+      <li><b>Integraciones y automatizaciones</b><span>Conectar tu sistema con Mercado Libre, calendarios, correos o planillas, y tareas que se hacen solas todos los días.</span></li>
+      <li><b>Asistentes con IA</b><span>Un chat que responde con los datos de tu negocio y propone acciones, con costos y límites bajo control.</span></li>
+      <li><b>Paneles y reportes</b><span>Ocupación, gastos, cumplimiento o ventas a la vista, con listas que se copian y se comparten.</span></li>
+      <li><b>Videos de lanzamiento</b><span>Reels que muestran cómo se usa la app con sus pantallas reales, para redes, la web o la tienda.</span></li>
     </ul>
   </section>
 
@@ -456,8 +87,8 @@
     <ol>
       <li><b>Charla</b><span>Me contás qué necesitás resolver y para quién. Te propongo qué funciones van primero.</span></li>
       <li><b>Prototipo</b><span>Ves las pantallas en tu celular y las ajustamos antes de escribir código.</span></li>
-      <li><b>Desarrollo por etapas</b><span>Cada etapa termina con una versión que ya podés usar, como las fases de App Casa.</span></li>
-      <li><b>Lanzamiento</b><span>Publico la app y te entrego los videos para presentarla.</span></li>
+      <li><b>Desarrollo por etapas</b><span>Cada etapa termina con una versión que ya podés usar.</span></li>
+      <li><b>Lanzamiento</b><span>Publico la app y, si querés, te entrego los videos para presentarla.</span></li>
       <li><b>Después</b><span>Ajustes, funciones nuevas y seguimiento de cómo la usan.</span></li>
     </ol>
   </section>
@@ -467,25 +98,8 @@
   <div class="wrap">
     <p id="contacto-titulo">Contame tu idea y te digo cómo la armaría.</p>
     <a class="mail" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20una%20app">mattolinijuansebastian@gmail.com</a>
-    <footer>Juan Sebastián Mattolini, desarrollo de apps y motion graphics.</footer>
+    <footer>Juan Sebastián Mattolini, desarrollo de apps y soluciones a medida.</footer>
   </div>
 </section>
-
-<script>
-  // Al tocar un trabajo se cambia la portada por el video con sonido; solo suena uno a la vez.
-  document.querySelectorAll('.frame').forEach(function (frame) {
-    frame.querySelector('.play').addEventListener('click', function () {
-      document.querySelectorAll('.frame video').forEach(function (v) { v.pause(); });
-      var video = document.createElement('video');
-      video.src = frame.dataset.src;
-      video.poster = frame.querySelector('img').src;
-      video.controls = true;
-      video.playsInline = true;
-      frame.replaceChildren(video);
-      video.play();
-      video.focus();
-    });
-  });
-</script>
 </body>
 </html>

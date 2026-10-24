@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Casa, Juan Mattolini</title>
+<meta name="description" content="Caso de desarrollo: App Casa, app para el mantenimiento del hogar con React, Supabase, Mercado Libre e IA.">
+<meta property="og:title" content="App Casa, caso de desarrollo">
+<meta property="og:image" content="posters/asistente.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="home" href="./">Juan Mattolini</a>
+  <nav class="top-nav"><a href="./#proyectos">Proyectos</a><a href="alterna.html">Alterna</a><a href="#contacto">Contacto</a></nav>
+</header>
+
+<main>
+  <section class="case case-first" id="app-casa" aria-labelledby="app-casa-titulo">
+    <div class="wrap">
+      <div class="case-intro">
+        <div>
+          <h1 class="case-title" id="app-casa-titulo">App Casa</h1>
+          <p class="lead">App Casa es una app para el mantenimiento del hogar: anotás lo que hay que arreglar, qué materiales hacen falta, cuánto cuesta y quién lo hace. La hice de punta a punta: diseño, desarrollo, servidor, integraciones, publicación y videos de lanzamiento. Así trabajo cada proyecto.</p>
+          <p class="links">
+            <a class="btn" href="https://juanmattolini.github.io/app-casa/">Abrir la app</a>
+            <a class="link" href="https://github.com/juanmattolini/app-casa">Ver el código en GitHub</a>
+          </p>
+        </div>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>Web app instalable (PWA) que funciona sin conexión</dd></div>
+          <div><dt>Interfaz</dt><dd>React 18 y Vite 5</dd></div>
+          <div><dt>Datos en el teléfono</dt><dd>IndexedDB con Dexie</dd></div>
+          <div><dt>Nube</dt><dd>Supabase: cuentas, base Postgres, archivos y funciones en el servidor</dd></div>
+          <div><dt>Servicios</dt><dd>Mercado Libre, Claude (Anthropic), OpenStreetMap, Google Calendar</dd></div>
+          <div><dt>Publicación</dt><dd>GitHub Actions compila y publica en GitHub Pages en cada cambio</dd></div>
+        </dl>
+      </div>
+
+      <h3 class="case-h">Qué hace, sección por sección</h3>
+      <div class="features">
+        <article>
+          <h4>Tareas</h4>
+          <p>Lista agrupada en Vencidas, Hoy, Próximas y Sin fecha, con filtro por habitación y buscador. Cada tarea tiene prioridad, fotos, notas, materiales con casillas y quién la hace (yo o un profesional).</p>
+          <p>Las tareas pueden repetirse: al marcarla hecha se crea la siguiente con los mismos materiales. El recordatorio va al calendario del teléfono con un enlace de Google Calendar o un archivo .ics.</p>
+        </article>
+        <article>
+          <h4>Presupuestos</h4>
+          <p>En cada tarea se cargan presupuestos con proveedor, precio, teléfono, notas y una foto o PDF adjunto. La app marca el más barato y el elegido, y ese precio pasa a Gastos.</p>
+        </article>
+        <article>
+          <h4>Casa</h4>
+          <p>Los aparatos de la casa con su manual, factura y garantía, y los contactos de plomeros, electricistas, gasistas y otros oficios. Cada uno guarda el historial de trabajos y lo que se pagó.</p>
+        </article>
+        <article>
+          <h4>Compras y Mercado Libre</h4>
+          <p>Junta los materiales pendientes de todas las tareas en una sola lista para compartir. Cada material tiene un botón para ver opciones en Mercado Libre con enlace de afiliado, siempre señalado como tal.</p>
+        </article>
+        <article>
+          <h4>Ofertas y comercios cerca</h4>
+          <p>Ofertas de ferreterías, pinturerías y corralones marcadas como auspiciadas. Si una coincide con algo de tu lista de compras, sube primero. Cada usuario genera un cupón por oferta, que el comercio puede verificar.</p>
+          <p>También busca ferreterías cercanas en OpenStreetMap, con distancia y cómo llegar. La ubicación se usa solo para esa búsqueda y no se guarda.</p>
+        </article>
+        <article>
+          <h4>Gastos</h4>
+          <p>Lo gastado y lo que falta pagar, por mes y por habitación, según el presupuesto elegido de cada tarea. Suma el costo estimado de los materiales con precios de referencia.</p>
+        </article>
+        <article>
+          <h4>Asistente</h4>
+          <p>Un chat que responde dudas de la casa mirando tus tareas, materiales y aparatos, y propone una tarea nueva con su lista de materiales. No guarda nada solo: la tarea se abre para revisarla antes de guardarla.</p>
+          <p>Tiene dos modos: uno básico gratis, con guías armadas para arreglos comunes (siempre deriva el gas a un gasista), y otro con Claude, de Anthropic, que corre en el servidor.</p>
+        </article>
+        <article>
+          <h4>Ajustes y cuenta</h4>
+          <p>Cuenta con email (enlace mágico o contraseña) para sincronizar entre dispositivos, o uso sin cuenta en un solo teléfono. Habitaciones editables, moneda, tema claro u oscuro y copia de seguridad en un archivo.</p>
+        </article>
+      </div>
+
+      <h3 class="case-h">Cómo está armada</h3>
+      <div class="arch" role="img" aria-label="Diagrama: el teléfono guarda los datos y sincroniza con Supabase. Supabase tiene cuentas, la base de datos, los archivos y dos funciones de servidor que hablan con Claude y con Mercado Libre. El teléfono consulta OpenStreetMap directamente. GitHub Actions publica la app en GitHub Pages.">
+        <div class="arch-col">
+          <p class="arch-title">En el teléfono</p>
+          <div class="node">App React instalable</div>
+          <div class="node">IndexedDB (Dexie): tareas, materiales, fotos, presupuestos, aparatos, contactos</div>
+          <div class="node node-soft">OpenStreetMap: comercios cerca</div>
+        </div>
+        <div class="arch-link"><span>sincroniza</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Supabase</p>
+          <div class="node">Cuentas por email</div>
+          <div class="node">Postgres: registros, ofertas, cupones, caché y uso del asistente</div>
+          <div class="node">Archivos privados: fotos y PDF</div>
+          <div class="node">Funciones del servidor: <code>asistente</code> y <code>ml-buscar</code></div>
+        </div>
+        <div class="arch-link"><span>llaman a</span></div>
+        <div class="arch-col">
+          <p class="arch-title">Servicios externos</p>
+          <div class="node">Claude (Anthropic)</div>
+          <div class="node">API de Mercado Libre</div>
+          <div class="node node-soft">GitHub Actions publica en GitHub Pages</div>
+        </div>
+      </div>
+
+      <h3 class="case-h">Decisiones de desarrollo</h3>
+      <div class="decisions">
+        <div>
+          <h4>Funciona sin conexión</h4>
+          <p>La app siempre lee del teléfono. Al sincronizar compara cada registro con lo último que envió, sube solo las diferencias y después baja lo que cambió en otros dispositivos. La hora la pone el servidor, así un teléfono con el reloj mal no desordena los cambios.</p>
+        </div>
+        <div>
+          <h4>Una tabla flexible en la nube</h4>
+          <p>Cada registro viaja como JSON en una sola tabla, así un campo nuevo en la app se sincroniza sin cambiar la base de datos. Los ids locales se traducen a identificadores únicos para que las relaciones entre tareas, materiales y habitaciones se mantengan entre dispositivos.</p>
+        </div>
+        <div>
+          <h4>Cada usuario ve solo lo suyo</h4>
+          <p>Seguridad a nivel de fila (RLS) en Postgres y en los archivos: cada consulta solo alcanza los datos de quien la hace. Las tablas internas, como la caché y el uso del asistente, no tienen acceso desde la app.</p>
+        </div>
+        <div>
+          <h4>Claves solo en el servidor</h4>
+          <p>Las credenciales de Mercado Libre y de Anthropic viven en funciones de Supabase, nunca en la app. Así no se pueden copiar desde el navegador.</p>
+        </div>
+        <div>
+          <h4>Costos bajo control</h4>
+          <p>El asistente con IA tiene un límite diario por usuario, contado de forma atómica para que dos consultas simultáneas no lo pasen, y registra los tokens usados por día. Las búsquedas en Mercado Libre se guardan 24 horas para no repetir consultas.</p>
+        </div>
+        <div>
+          <h4>Plan B ante límites externos</h4>
+          <p>Cuando la API de búsqueda de Mercado Libre empezó a responder con un bloqueo, la app pasó a abrir la búsqueda directamente con el enlace de afiliado. Cada integración se prende o se apaga al compilar, sin tocar el código.</p>
+        </div>
+        <div>
+          <h4>Privacidad</h4>
+          <p>La ubicación no se guarda. La analítica cuenta solo visitas, nunca tareas ni datos personales. La charla con el asistente queda en el teléfono. Las fotos se comprimen antes de guardarse.</p>
+        </div>
+        <div>
+          <h4>Transparencia con lo comercial</h4>
+          <p>Las ofertas dicen "Auspiciado" y los enlaces a Mercado Libre avisan que son de afiliado. Los cupones quedan registrados para medir cuántos se generan y cuántos se canjean.</p>
+        </div>
+      </div>
+
+      <h3 class="case-h">Estructura del código</h3>
+      <div class="tree-wrap">
+<pre class="tree"><code>app-casa/
+├─ src/
+│  ├─ App.jsx              pantallas de Tareas, Compras, Gastos y Ajustes
+│  ├─ Casa.jsx             aparatos y contactos
+│  ├─ Ofertas.jsx          ofertas auspiciadas y cupones
+│  ├─ Cercanos.jsx         comercios cerca (OpenStreetMap)
+│  ├─ MercadoLibre.jsx     botón de precios y costo estimado
+│  ├─ Asistente.jsx        chat
+│  ├─ Acceso.jsx, Nube.jsx inicio de sesión y estado de la sincronización
+│  ├─ db.js                base local (Dexie) y datos de ejemplo
+│  ├─ nube.js              sincronización con Supabase
+│  ├─ asistente-basico.js  asistente sin IA
+│  ├─ plantillas.js        guías de arreglos y sus materiales
+│  ├─ calendario.js        recordatorios (Google Calendar e .ics)
+│  ├─ respaldo.js          copia de seguridad en JSON
+│  └─ imagenes.js          compresión de fotos
+├─ supabase/
+│  ├─ functions/asistente  chat con Claude, con límite diario
+│  ├─ functions/ml-buscar  búsqueda en Mercado Libre con caché
+│  └─ migrations/          5 migraciones SQL con RLS
+├─ .github/workflows/      compilar y publicar en GitHub Pages
+└─ vite.config.js          PWA o un único HTML para vista previa</code></pre>
+      </div>
+      <p class="case-foot">Unas 5.500 líneas de código, desarrolladas en octubre de 2026.</p>
+    </div>
+  </section>
+
+  <section class="wrap work" aria-labelledby="trabajos">
+    <div class="work-head">
+      <h2 id="trabajos">Videos de lanzamiento</h2>
+      <p>Cada app sale con videos que muestran cómo se usa, listos para redes y para la tienda. Estos son los que hice para App Casa. Tocá uno para verlo con sonido.</p>
+    </div>
+    <ul class="shelf">
+      <li class="reel">
+        <div class="frame" data-src="videos/compras.mp4"><button class="play" type="button" aria-label="Ver Lista de compras"><img src="posters/compras.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Lista de compras</h3>
+        <p><span class="len">0:15</span>, con música. De los papelitos sueltos a una lista ordenada.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/propiedad.mp4"><button class="play" type="button" aria-label="Ver Tu propiedad al día"><img src="posters/propiedad.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Tu propiedad al día</h3>
+        <p><span class="len">0:20</span>, con voz. Expensas, facturas y presupuestos en un solo lugar.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/asistente.mp4"><button class="play" type="button" aria-label="Ver Asistente de la casa"><img src="posters/asistente.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Asistente de la casa</h3>
+        <p><span class="len">0:46</span>, con música. Presenta una función nueva usando la pantalla real de la app.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/materiales-mercadolibre.mp4"><button class="play" type="button" aria-label="Ver Materiales en Mercado Libre"><img src="posters/materiales-mercadolibre.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Materiales en Mercado Libre</h3>
+        <p><span class="len">0:47</span>, con música. Cómo la app arma la lista de materiales con precios.</p>
+      </li>
+      <li class="reel">
+        <div class="frame" data-src="videos/ofertas-cercanos.mp4"><button class="play" type="button" aria-label="Ver Ofertas y comercios cerca"><img src="posters/ofertas-cercanos.jpg" alt="" loading="lazy"><span></span></button></div>
+        <h3>Ofertas y comercios cerca</h3>
+        <p><span class="len">0:35</span>, con música. Cupones y negocios del barrio dentro de la app.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="wrap next" aria-label="Otro proyecto">
+    <a href="alterna.html"><span>Otro proyecto</span><b>Alterna: reserva de puestos de oficina</b></a>
+  </section>
+</main>
+
+<section class="contact" id="contacto" aria-labelledby="contacto-titulo">
+  <div class="wrap">
+    <p id="contacto-titulo">Contame tu idea y te digo cómo la armaría.</p>
+    <a class="mail" href="mailto:mattolinijuansebastian@gmail.com?subject=Quiero%20una%20app">mattolinijuansebastian@gmail.com</a>
+    <footer>Juan Sebastián Mattolini, desarrollo de apps y motion graphics.</footer>
+  </div>
+</section>
+
+<script>
+  // Al tocar un trabajo se cambia la portada por el video con sonido; solo suena uno a la vez.
+  document.querySelectorAll('.frame').forEach(function (frame) {
+    frame.querySelector('.play').addEventListener('click', function () {
+      document.querySelectorAll('.frame video').forEach(function (v) { v.pause(); });
+      var video = document.createElement('video');
+      video.src = frame.dataset.src;
+      video.poster = frame.querySelector('img').src;
+      video.controls = true;
+      video.playsInline = true;
+      frame.replaceChildren(video);
+      video.play();
+      video.focus();
+    });
+  });
+</script>
+</body>
+</html>
