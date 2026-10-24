@@ -292,6 +292,8 @@
 .project:hover { background: var(--hover); }
 .project:hover .more { color: var(--ink); text-decoration-color: var(--ink); }
 .projects + .offer { border-top: 0; padding-top: 0; }
+.showreel { padding-bottom: clamp(56px, 8vw, 104px); }
+.showreel video { display: block; width: 100%; height: auto; border-radius: 20px; background: var(--deep); box-shadow: 0 30px 60px -30px var(--shadow); }
 
 /* Páginas de proyecto */
 .case-first { padding-top: clamp(40px, 6vw, 72px); }
