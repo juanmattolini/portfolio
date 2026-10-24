@@ -343,3 +343,4 @@
   :root:not([data-theme="light"]) .theme-btn .moon { display: none; }
 }
 .top { align-items: center; }
+.private-note { color: var(--muted); margin: 0; font-size: 0.9375rem; }
